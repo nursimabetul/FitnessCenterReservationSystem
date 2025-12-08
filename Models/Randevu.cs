@@ -2,10 +2,38 @@
 {
 	public class Randevu
 	{
+
 		public int RandevuId { get; set; }
 		public DateTime Tarih { get; set; }
-		public string? ApplicationUserId { get; set; } //Foreign key
-		public ApplicationUser? ApplicationUser { get; set; }   //Navigation property
+
+		// Üye
+		public string? UyeId { get; set; }
+		public ApplicationUser? Uye { get; set; }
+
+		// Antrenör
+		public string? AntrenorId { get; set; }
+		public ApplicationUser? Antrenor { get; set; }
+
+		// Salon
+		public int SalonId { get; set; }
+		public Salon? Salon { get; set; }
+
+		// Hizmet
+		public int HizmetId { get; set; }
+		public Hizmet? Hizmet { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	}
 }
