@@ -15,4 +15,3 @@
 			= new List<Randevu>();
 	}
 }
-}
