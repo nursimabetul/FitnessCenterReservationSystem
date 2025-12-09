@@ -8,8 +8,8 @@
 		public ICollection<SalonCalismaSaati> CalismaSaatleri { get; set; }
 			= new List<SalonCalismaSaati>();
 
-		public ICollection<SalonHizmet> SalonHizmetleri { get; set; }
-			= new List<SalonHizmet>();
+		public ICollection<Hizmet> Hizmetler { get; set; }
+			= new List<Hizmet>();
 
 		public ICollection<Randevu> Randevular { get; set; }
 			= new List<Randevu>();
