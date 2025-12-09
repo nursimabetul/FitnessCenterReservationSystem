@@ -2,29 +2,17 @@
 {
 	public class Salon
 	{
-		public int SalonId { get; set; }
-		public string Ad { get; set; }
-		public string? Adres { get; set; }
-		public string? CalismaSaatleri { get; set; }
+		public int Id { get; set; }
+		public string Ad { get; set; } = string.Empty;
 
-		// Salonun sunduğu hizmetler
-		public ICollection<Hizmet>? Hizmetler { get; set; }
+		public ICollection<SalonCalismaSaati> CalismaSaatleri { get; set; }
+			= new List<SalonCalismaSaati>();
 
-		// Salonun antrenörleri
-		public ICollection<ApplicationUser>? Antrenorler { get; set; }
+		public ICollection<SalonHizmet> SalonHizmetleri { get; set; }
+			= new List<SalonHizmet>();
 
-		// Bu salona ait randevular
-		public ICollection<Randevu>? Randevular { get; set; }
-
-
-
-
-
-		 
-
-
-
-
-
+		public ICollection<Randevu> Randevular { get; set; }
+			= new List<Randevu>();
 	}
+}
 }

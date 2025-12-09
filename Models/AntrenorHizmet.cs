@@ -4,9 +4,11 @@
 	{
 		public int AntrenorHizmetId { get; set; }
 
-		public string AntrenorId { get; set; }
+		// Antrenör Id (ApplicationUser)
+		public string? AntrenorId { get; set; }
 		public ApplicationUser? Antrenor { get; set; }
 
+		// Hizmet
 		public int HizmetId { get; set; }
 		public Hizmet? Hizmet { get; set; }
 	}

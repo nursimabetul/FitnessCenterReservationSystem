@@ -6,7 +6,7 @@ namespace FitnessCenterReservationSystem.Models
 	{
 		public string? Ad { get; set; }
 		public string? Soyad { get; set; }
-		public DateTime? DogumTarihi { get; set; }
+		public DateTime? DogumTarihi { get; set; } //= DateTime.UtcNow;
 		public double? Boy { get; set; }
 		public double? Kilo { get; set; }
 
@@ -16,9 +16,18 @@ namespace FitnessCenterReservationSystem.Models
 		// Antrenörün baktığı randevular
 		public ICollection<Randevu>? AntrenorRandevulari { get; set; }
 
-		// Antrenörün verebildiği hizmetler (Many-to-Many)
-		public ICollection<AntrenorHizmet>? AntrenorHizmetler { get; set; }
 
+
+		// --- Antrenörün verebildiği hizmetler ---
+		public ICollection<AntrenorHizmet>? AntrenorHizmetler { get; set; }
+		// --- Antrenörün uzmanlık Alanlari---
+		public ICollection<AntrenorUzmanlikAlani>? AntrenorUzmanlikAlanlari { get; set; }
+
+		//Antrenör çalışma saatleri
+		public ICollection<AntrenorCalismaSaati>? CalismaSaatleri { get; set; }
+
+		public int? SalonId { get; set; }
+		public Salon? Salon { get; set; }
 
 
 	}
