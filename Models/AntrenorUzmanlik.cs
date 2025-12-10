@@ -1,6 +1,6 @@
 ﻿namespace FitnessCenterReservationSystem.Models
 {
-	public class AntrenorUzmanlikAlani
+	public class AntrenorUzmanlik
 	{
 		public int AntrenorUzmanlikAlaniId { get; set; }
 

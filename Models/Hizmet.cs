@@ -11,22 +11,11 @@
 		public Salon Salon { get; set; }
 
 
-
-
-
 		// Bu hizmete ait randevular
 		public ICollection<Randevu>? Randevular { get; set; }
 
 		// Hizmeti verebilen antrenörler (pivot tablo)
-		public ICollection<AntrenorUzmanlikAlani>? AntrenorHizmetler { get; set; }
-
-
-
-
-
-
-
-
+		public ICollection<AntrenorUzmanlik>? AntrenorHizmetler { get; set; }
 
 	}
 }

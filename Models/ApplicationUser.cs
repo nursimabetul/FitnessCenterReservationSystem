@@ -21,7 +21,7 @@ namespace FitnessCenterReservationSystem.Models
 		// --- Antrenörün verebildiği hizmetler ---
 		public ICollection<AntrenorHizmet>? AntrenorHizmetler { get; set; }
 		// --- Antrenörün uzmanlık Alanlari---
-		public ICollection<AntrenorUzmanlikAlani>? AntrenorUzmanlikAlanlari { get; set; }
+		public ICollection<AntrenorUzmanlik>? AntrenorUzmanlikAlanlari { get; set; }
 
 		//Antrenör çalışma saatleri
 		public ICollection<AntrenorCalismaSaati>? CalismaSaatleri { get; set; }
