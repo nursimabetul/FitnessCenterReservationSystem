@@ -21,15 +21,51 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
+                        <!-- Ana sayfa -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
+
+                        <!-- Hizmetler -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-controller="Hizmet" asp-action="Index">Hizmetler</a>
                         </li>
+
+                        <!-- Salonlar -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Salon" asp-action="Index">Salonlar</a>
+                        </li>
+
+                        <!-- Antrenörler -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Antrenor" asp-action="Index">Antrenörler</a>
+                        </li>
+
+                        <!-- Randevular -->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Randevu" asp-action="Index">Randevular</a>
+                        </li>
+
+                        <!-- Yönetim (Sadece Admin) -->
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#">Yönetim</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Salon" asp-action="Index">Salon Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Hizmet" asp-action="Index">Hizmet Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Antrenor" asp-action="Index">Antrenör Yönetimi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="UzmanlikKategori" asp-action="Index">Uzmanlık Kategorileri</a></li>
+                                </ul>
+                            </li>
+                        }
+
                     </ul>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -44,21 +80,15 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - FitnessCenterReservationSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - FitnessCenterReservationSystem -
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
-    <!-- jQuery (opsiyonel) -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- Bootstrap JS -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Proje genel JS -->
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Sayfa özel JS -->
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>
