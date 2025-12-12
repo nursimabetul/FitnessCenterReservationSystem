@@ -14,7 +14,6 @@ namespace FitnessCenterReservationSystem.Data
 
 		// --- DbSet Tanımları ---
 		public DbSet<Salon> Salonlar { get; set; }
-		public DbSet<SalonCalismaSaati> SalonCalismaSaatleri { get; set; }
 		public DbSet<AntrenorCalismaSaati> AntrenorCalismaSaatleri { get; set; }
 		public DbSet<Hizmet> Hizmetler { get; set; }
 		public DbSet<AntrenorHizmet> AntrenorHizmetler { get; set; }
@@ -98,10 +97,8 @@ namespace FitnessCenterReservationSystem.Data
 			// ------------------------------------------------------------
 			// 7) Salon ↔ Çalışma Saatleri (One-to-Many)
 			// ------------------------------------------------------------
-			builder.Entity<SalonCalismaSaati>()
-				.HasOne(s => s.Salon)
-				.WithMany(salon => salon.CalismaSaatleri)
-				.HasForeignKey(s => s.SalonId);
+
+			// !!! İptal edildi çünkü Salon çalışma saatleri modeli kullanılmıyor.
 
 			// ------------------------------------------------------------
 			// 8) Antrenör ↔ Çalışma Saatleri (One-to-Many)
