@@ -26,7 +26,8 @@
         <!-- MAIN CONTENT -->
         <main class="app-main">
             <div class="container-fluid pt-3">
-                @RenderBody()
+				@RenderBody()
+				@await Html.PartialAsync("_Notification")   <!-- BURAYA EKLE -->
             </div>
         </main>
 
@@ -34,6 +35,26 @@
 
     <!-- AdminLTE JS -->
     <script src="~/dist/js/adminlte.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alerts = document.querySelectorAll(".alert");
+
+            alerts.forEach(alert => {
+                // 2 saniye sonra fade-out
+                setTimeout(() => {
+                    alert.classList.remove("show");
+                    alert.classList.add("fade");
+
+                    // 500ms sonra tamamen kapat
+                    setTimeout(() => {
+                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                        bsAlert.close();
+                    }, 500);
+
+                }, 2000);
+            });
+        });
+    </script>
 
     @RenderSection("Scripts", required: false)
 
