@@ -1,5 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Identity
+@using FitnessCenterReservationSystem.Models
+
+<!DOCTYPE html>
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +14,12 @@
     <!-- Proje CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FitnessCenterReservationSystem.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
+
 </head>
+
+
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -39,6 +47,10 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Salon" asp-action="Index">Salonlar</a>
                         </li>
+
+
+                        <a asp-controller="UzmanlikAlani" asp-action="Index">Uzmanlık Alanları</a>
+
 
                         <!-- Antrenörler -->
                         <li class="nav-item">
@@ -77,6 +89,35 @@
             @RenderBody()
         </main>
     </div>
+    <div class="container mt-3">
+
+        <!-- ALERT MESAJLARI - TempData'dan gelen mesajlar burada gösterilecek -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @Html.Raw(Html.Encode(TempData["Success"]))
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @Html.Raw(Html.Encode(TempData["Error"]))
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+            </div>
+        }
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                @Html.Raw(Html.Encode(TempData["Info"]))
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+            </div>
+        }
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -90,5 +131,24 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // Sayfa yüklendiğinde çalışır
+        setTimeout(function () {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+                let bsAlert = new bootstrap.Alert(alert);
+                alert.classList.add('fade');
+                alert.classList.add('show');
+
+                // 0.5 saniyede kapanır
+                setTimeout(() => {
+                    bsAlert.close();
+                }, 500);
+            });
+        }, 1000); // 1.5  saniye sonra kapanma başlasın
+    </script>
+
+
 </body>
 </html>
