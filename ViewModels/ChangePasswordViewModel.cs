@@ -1,24 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserRoles.ViewModels
+namespace FitnessCenterReservationSystem.ViewModels
 {
-    public class ChangePasswordViewModel
-    {
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress]
-        public string Email { get; set; }
+	public class ChangePasswordViewModel
+	{
+		[Required(ErrorMessage = "Email adresinizi giriniz.")]
+		[EmailAddress(ErrorMessage = "Geçerli bir email adresi giriniz.")]
+		[Display(Name = "Email")]
+		public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(40, MinimumLength = 8, ErrorMessage = "The {0} must be at {2} and at max {1} characters long.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "New Password")]
-        [Compare("ConfirmNewPassword", ErrorMessage = "Password does not match.")]
-        public string NewPassword { get; set; }
+		[Required(ErrorMessage = "Yeni şifrenizi giriniz.")]
+		[StringLength(40, MinimumLength = 8, ErrorMessage = "{0} en az {2}, en fazla {1} karakter olmalıdır.")]
+		[DataType(DataType.Password)]
+		[Display(Name = "Yeni Şifre")]
+		public string NewPassword { get; set; }
 
-        [Required(ErrorMessage = "Confirm Password is required.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm New Password")]
-        public string ConfirmNewPassword { get; set; }
-
-    }
+		[Required(ErrorMessage = "Yeni şifrenizi tekrar giriniz.")]
+		[DataType(DataType.Password)]
+		[Display(Name = "Yeni Şifreyi Onayla")]
+		[Compare("NewPassword", ErrorMessage = "Şifreler eşleşmiyor.")]
+		public string ConfirmNewPassword { get; set; }
+	}
 }

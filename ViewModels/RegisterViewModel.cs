@@ -13,7 +13,7 @@ namespace FitnessCenterReservationSystem.ViewModels
 		public string Soyad { get; set; }
 
 		[Required(ErrorMessage = "Email adresinizi giriniz.")]
-		[EmailAddress]
+		[EmailAddress(ErrorMessage = "Geçerli bir email adresi giriniz.")]
 		[Display(Name = "Email")]
 		public string Email { get; set; }
 

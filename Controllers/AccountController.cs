@@ -25,6 +25,7 @@ namespace FitnessCenterReservationSystem.Controllers
 		[HttpGet]
 		public IActionResult Register()
 		{
+			ViewData["Roles"] = new List<string> { "Üye", "Antrenör", "Admin" }; // Dropdown için
 			return View();
 		}
 
@@ -34,7 +35,10 @@ namespace FitnessCenterReservationSystem.Controllers
 		public async Task<IActionResult> Register(RegisterViewModel model)
 		{
 			if (!ModelState.IsValid)
+			{
+				ViewData["Roles"] = new List<string> { "Üye", "Antrenör", "Admin" };
 				return View(model);
+			}
 
 			var user = new ApplicationUser
 			{
@@ -45,7 +49,7 @@ namespace FitnessCenterReservationSystem.Controllers
 				DogumTarihi = model.DogumTarihi,
 				Boy = model.Boy,
 				Kilo = model.Kilo,
-				EmailConfirmed = true,
+				EmailConfirmed = false, // Admin onayı veya email doğrulama için false
 				SecurityStamp = Guid.NewGuid().ToString()
 			};
 
@@ -53,25 +57,65 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			if (result.Succeeded)
 			{
-				// Role ekleme
-				if (!string.IsNullOrEmpty(model.Role))
-				{
-					// Rol yoksa oluştur
-					if (!await _roleManager.RoleExistsAsync(model.Role))
-						await _roleManager.CreateAsync(new IdentityRole(model.Role));
+				// Rol ekleme
+				var roleName = string.IsNullOrEmpty(model.Role) ? "Üye" : model.Role;
 
-					await _userManager.AddToRoleAsync(user, model.Role);
-				}
+				if (!await _roleManager.RoleExistsAsync(roleName))
+					await _roleManager.CreateAsync(new IdentityRole(roleName));
 
-				// Oturum aç
-				await _signInManager.SignInAsync(user, isPersistent: false);
+				await _userManager.AddToRoleAsync(user, roleName);
 
-				TempData["Success"] = "Kayıt işlemi başarılı!";
+				TempData["Success"] = "Kayıt işlemi başarılı! Admin onayı bekleniyor.";
 
 				return RedirectToAction("Index", "Home");
 			}
 
-			// Hataları ekle
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error.Description);
+			}
+
+			ViewData["Roles"] = new List<string> { "Üye", "Antrenör", "Admin" };
+			return View(model);
+		}
+
+		// GET: ChangePassword
+		[HttpGet]
+		public async Task<IActionResult> ChangePassword()
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+				return RedirectToAction("Login");
+
+			var model = new ChangePasswordViewModel
+			{
+				Email = user.Email
+			};
+
+			return View(model);
+		}
+
+		// POST: ChangePassword
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+		{
+			if (!ModelState.IsValid)
+				return View(model);
+
+			var user = await _userManager.FindByEmailAsync(model.Email);
+			if (user == null)
+				return RedirectToAction("Login");
+
+			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+			var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+			if (result.Succeeded)
+			{
+				TempData["Success"] = "Şifreniz başarıyla değiştirildi.";
+				return RedirectToAction("Login");
+			}
+
 			foreach (var error in result.Errors)
 			{
 				ModelState.AddModelError("", error.Description);
@@ -79,5 +123,51 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			return View(model);
 		}
+
+
+		// GET: Login
+		[HttpGet]
+		public IActionResult Login()
+		{
+			return View();
+		}
+
+		// POST: Login
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Login(LoginViewModel model)
+		{
+			if (!ModelState.IsValid)
+				return View(model);
+
+			var user = await _userManager.FindByEmailAsync(model.Email);
+			if (user == null)
+			{
+				ModelState.AddModelError("", "Geçersiz email veya şifre.");
+				return View(model);
+			}
+
+			// Email doğrulama kontrolü
+			if (!user.EmailConfirmed)
+			{
+				ModelState.AddModelError("", "Hesabınız henüz onaylanmamış. Lütfen email doğrulamasını yapın veya admin onayını bekleyin.");
+				return View(model);
+			}
+
+			// Giriş işlemi
+			var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+			if (result.Succeeded)
+			{
+				return RedirectToAction("Index", "Home");
+			}
+			else
+			{
+				ModelState.AddModelError("", "Geçersiz email veya şifre.");
+				return View(model);
+			}
+		}
+
+
 	}
 }

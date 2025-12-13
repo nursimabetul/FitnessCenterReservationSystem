@@ -63,14 +63,17 @@
 
             <div class="mb-3">
                 <label asp-for="Role" class="form-label"></label>
-                <select asp-for="Role" class="form-select">
+
+                <select asp-for="Role"
+                        asp-items="@(new SelectList(ViewData["Roles"] as List<string>))"
+                        class="form-select">
                     <option value="">Seçiniz</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Üye">Üye</option>
-                    <option value="Antrenör">Antrenör</option>
                 </select>
+
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
+
+
 
             <input type="submit" value="Kayıt Ol" class="btn btn-success w-100 p-2" />
 
