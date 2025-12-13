@@ -28,7 +28,8 @@ namespace FitnessCenterReservationSystem.Models
 
 		public int? SalonId { get; set; }
 		public Salon? Salon { get; set; }
-
+		// Kullanıcı onay durumu
+		public bool Onaylandi { get; set; } = false; // Başlangıçta onay beklemede
 
 	}
 }

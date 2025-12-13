@@ -26,8 +26,8 @@
         <!-- MAIN CONTENT -->
         <main class="app-main">
             <div class="container-fluid pt-3">
-				@RenderBody()
 				@await Html.PartialAsync("_Notification")   <!-- BURAYA EKLE -->
+				@RenderBody()
             </div>
         </main>
 
@@ -37,24 +37,27 @@
     <script src="~/dist/js/adminlte.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Tüm .alert sınıflı mesajlar
             const alerts = document.querySelectorAll(".alert");
 
             alerts.forEach(alert => {
-                // 2 saniye sonra fade-out
+                // 2 saniye sonra kaybolmaya başla
                 setTimeout(() => {
-                    alert.classList.remove("show");
-                    alert.classList.add("fade");
+                    alert.style.transition = "opacity 0.5s ease"; // yumuşak geçiş
+                    alert.style.opacity = "0"; // görünürlüğü azalt
 
-                    // 500ms sonra tamamen kapat
+                    // 0.5 saniye sonra DOM'dan kaldır
                     setTimeout(() => {
-                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                        bsAlert.close();
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
                     }, 500);
 
-                }, 2000);
+                }, 2000); // 2 saniye görünür kalır
             });
         });
     </script>
+
 
     @RenderSection("Scripts", required: false)
 
