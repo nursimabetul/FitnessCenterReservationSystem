@@ -1,89 +1,135 @@
-﻿<nav class="app-header navbar navbar-expand bg-body">
+﻿@using Microsoft.AspNetCore.Identity
+@using FitnessCenterReservationSystem.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
 
-        <!-- Sidebar Toggle Button -->
-        <button class="btn btn-link nav-link" data-lte-toggle="sidebar" type="button" aria-label="Toggle Sidebar">
-            <i class="bi bi-list" style="font-size: 1.3rem;"></i>
+        <!-- Sidebar Toggle -->
+        <button class="btn btn-link nav-link" data-lte-toggle="sidebar" type="button">
+            <i class="bi bi-list fs-5"></i>
         </button>
 
-        <!-- Left Navbar Links -->
+        <!-- Left -->
         <ul class="navbar-nav ms-2">
             <li class="nav-item d-none d-md-block">
                 <a href="/" class="nav-link">Anasayfa</a>
             </li>
         </ul>
 
-        <!-- Right Side of Navbar -->
+        <!-- Right -->
         <ul class="navbar-nav ms-auto">
 
-            <!-- Search Icon -->
+            <!-- Search -->
             <li class="nav-item dropdown">
-                <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                <a class="nav-link" data-bs-toggle="dropdown">
                     <i class="bi bi-search"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end p-3">
                     <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Ara..." required>
+                        <input class="form-control me-2" placeholder="Ara..." />
                         <button class="btn btn-primary" type="submit">Ara</button>
                     </form>
                 </div>
             </li>
 
-            <!-- Notifications -->
-            <li class="nav-item dropdown">
-                <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                    <i class="bi bi-bell"></i>
-                    <span class="navbar-badge badge text-bg-danger">3</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end p-0">
-                    <div class="card card-body">
-                        <h6 class="dropdown-header">Bildirimler</h6>
-                        <a href="#" class="dropdown-item">
-                            <i class="bi bi-calendar-event me-2"></i> Yeni randevu kaydı
-                        </a>
-                        <a href="#" class="dropdown-item">
-                            <i class="bi bi-person-plus me-2"></i> Yeni üye kaydı
-                        </a>
-                        <a href="#" class="dropdown-item">
-                            <i class="bi bi-info-circle me-2"></i> Sistem duyurusu
-                        </a>
+            <!-- Notifications (sadece giriş yapanlar) -->
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-danger">3</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end p-0">
+                        <div class="card card-body">
+                            <h6 class="dropdown-header">Bildirimler</h6>
+                            <a class="dropdown-item">Yeni randevu</a>
+                            <a class="dropdown-item">Yeni üye</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            }
 
-            <!-- User Menu -->
-            <li class="nav-item dropdown user-menu">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="https://ui-avatars.com/api/?name=Admin" class="user-image rounded-circle" alt="User Image">
-                    <span class="d-none d-md-inline">Admin</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <!-- User image -->
-                    <li class="user-header text-center p-3">
-                        <img src="https://ui-avatars.com/api/?name=Admin" class="rounded-circle mb-2" alt="User Image" width="80">
-                        <p class="mb-0">
-                            Admin Paneli<br />
-                            <small>Fitness Center Yönetimi</small>
-                        </p>
-                    </li>
+            <!-- GİRİŞ YAPMAMIŞ -->
+            @if (!SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Account" asp-action="Login">
+                        Giriş Yap
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Account" asp-action="Register">
+                        Kayıt Ol
+                    </a>
+                </li>
+            }
+            else
+            {
+                var user = await UserManager.GetUserAsync(User);
 
-                    <!-- Menu Body -->
-                    <li>
-                        <a href="/Account/Profile" class="dropdown-item">
-                            <i class="bi bi-person-circle me-2"></i> Profilim
-                        </a>
-                    </li>
+                var roles = user != null
+                ? await UserManager.GetRolesAsync(user)
+                : new List<string>();
 
-                    <!-- Logout -->
-                    <li>
-                        <form method="post" action="/Account/Logout">
-                            <button class="dropdown-item text-danger">
-                                <i class="bi bi-box-arrow-right me-2"></i> Çıkış Yap
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </li>
+                var roleName = roles.FirstOrDefault();
+
+                <li class="nav-item dropdown user-menu">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="https://ui-avatars.com/api/?name=@(
+                             user != null
+                                 ? Uri.EscapeDataString($"{user.Ad} {user.Soyad}")
+                                 : "User"
+                                                )"
+                         class="rounded-circle me-1"
+                         width="32" />
+
+                        <span class="d-none d-md-inline">
+                            @(user != null ? $"{user.Ad} {user.Soyad}" : "Kullanıcı")
+                        </span>
+
+                    @if (!string.IsNullOrEmpty(roleName))
+                        {
+                            <small class="text-muted">(@roleName)</small>
+                        }
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="dropdown-header text-center">
+                            <strong>@(roleName ?? "Kullanıcı")</strong><br />
+                            <small>Fitness Center</small>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                <i class="bi bi-person me-2"></i> Profilim
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">
+                                <i class="bi bi-key me-2"></i> Şifre Değiştir
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider" /></li>
+
+                        <li>
+                            <form asp-controller="Account"
+                                  asp-action="Logout"
+                                  method="post"
+                                  class="m-0">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Çıkış Yap
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            }
 
         </ul>
     </div>

@@ -20,13 +20,16 @@ builder.Services.AddRazorPages();
 // Identity  tanýmlanmasý
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-	options.Password.RequireDigit = true;
-	options.Password.RequireLowercase = true;
-	options.Password.RequiredLength = 6;
+	options.Password.RequireDigit = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequiredLength = 3;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequireUppercase = false;
 	options.User.RequireUniqueEmail = true;
 	options.SignIn.RequireConfirmedAccount = false;
 	options.SignIn.RequireConfirmedEmail = false;
 	options.SignIn.RequireConfirmedPhoneNumber = false;
+
 
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -46,6 +49,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 var app = builder.Build();
+
+await SeedService.SeedDatabase(app.Services);
 
 // SeedService ile veritabanýný doldur
 using (var scope = app.Services.CreateScope())

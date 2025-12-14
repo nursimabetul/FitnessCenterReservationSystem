@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using FitnessCenterReservationSystem.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
@@ -13,28 +17,40 @@
     @RenderSection("Styles", required: false)
 </head>
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="@(SignInManager.IsSignedIn(User)
+    ? "layout-fixed sidebar-expand-lg bg-body-tertiary"
+    : "bg-body-tertiary pt-5")">
 
     <div class="app-wrapper">
 
-        <!-- NAVBAR -->
-        @await Html.PartialAsync("_Navbar")
+     
 
-        <!-- SIDEBAR -->
-        @await Html.PartialAsync("_Sidebar")
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <!-- NAVBAR -->
+            @await Html.PartialAsync("_Navbar")
+
+            <!-- SIDEBAR -->
+            @await Html.PartialAsync("_Sidebar")
+        }
+        else
+        {
+            <!-- Public kullanıcı menüsü -->
+            @await Html.PartialAsync("_PublicNavbar")
+        }
+
 
         <!-- MAIN CONTENT -->
         <main class="app-main">
             <div class="container-fluid pt-3">
-				@await Html.PartialAsync("_Notification")   <!-- BURAYA EKLE -->
+				@await Html.PartialAsync("_Notification")    
 				@RenderBody()
             </div>
         </main>
 
     </div>
 
-    <!-- AdminLTE JS -->
-    <script src="~/dist/js/adminlte.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Tüm .alert sınıflı mesajlar
@@ -59,7 +75,10 @@
     </script>
 
 
-    @RenderSection("Scripts", required: false)
 
 </body>
+<!-- AdminLTE JS -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </html>

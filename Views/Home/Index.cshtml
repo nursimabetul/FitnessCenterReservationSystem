@@ -1,8 +1,85 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5 pt-4">
+
+    <!-- Hero Bölümü -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">Fitness Center’a Hoşgeldiniz!</h1>
+            <p class="lead">
+                Sağlıklı yaşam ve güçlü bir vücut için en iyi imkanları sunuyoruz.
+                Modern ekipmanlarımız ve profesyonel eğitmenlerimiz ile hedeflerinize ulaşın.
+            </p>
+            <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register">
+                Üye Ol
+            </a>
+            <a class="btn btn-outline-primary btn-lg ms-2" asp-controller="Account" asp-action="Login">
+                Giriş Yap
+            </a>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="~/images/fitness-hero.jpg" class="img-fluid rounded" alt="Fitness Center">
+        </div>
+    </div>
+
+    <!-- Hizmetler Bölümü -->
+    <div class="row text-center mb-5">
+        <h2 class="mb-4 fw-bold">Hizmetlerimiz</h2>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-dumbbell fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">Ağırlık & Kardiyo</h5>
+                    <p class="card-text">Modern ekipmanlarımızla kas ve dayanıklılığınızı artırın.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-people fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">Gruplar & Dersler</h5>
+                    <p class="card-text">Yoga, pilates, spinning ve daha fazlası ile formda kalın.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-heart-pulse fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">Kişisel Antrenör</h5>
+                    <p class="card-text">Profesyonel eğitmenlerimizle size özel programlar oluşturun.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Üye Olmaya Teşvik Bölümü -->
+    <div class="row align-items-center bg-primary text-white rounded p-5 mb-5">
+        <div class="col-md-8">
+            <h2 class="fw-bold">Sağlıklı yaşam için ilk adımı atın!</h2>
+            <p>Hemen üye olun ve Fitness Center ayrıcalığını deneyimleyin.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a class="btn btn-light btn-lg" asp-controller="Account" asp-action="Register">Üye Ol</a>
+        </div>
+    </div>
+
+    <!-- İletişim / Bize Ulaşın -->
+    <div class="row mb-5">
+        <h2 class="mb-4 fw-bold text-center">Bize Ulaşın</h2>
+        <div class="col-md-6 mb-3">
+            <p><i class="bi bi-geo-alt-fill me-2"></i>Adres: Örnek Mah. Spor Cad. No:10, Erzurum</p>
+            <p><i class="bi bi-telephone-fill me-2"></i>Telefon: +90 123 456 78 90</p>
+            <p><i class="bi bi-envelope-fill me-2"></i>Email: info@fitnesscenter.com</p>
+        </div>
+        <div class="col-md-6">
+            <iframe class="w-100 rounded" height="250"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3068.1234567890!2d41.2800!3d39.9200!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDU1JzUwLjAiTiA0McKwMTYnMzkuMCJF!5e0!3m2!1str!2str!4v0000000000000"
+                    style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+
 </div>

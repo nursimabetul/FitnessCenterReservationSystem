@@ -3,6 +3,7 @@ using FitnessCenterReservationSystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace FitnessCenterReservationSystem.Controllers
 {
 	public class AccountController : Controller
@@ -157,17 +158,34 @@ namespace FitnessCenterReservationSystem.Controllers
 			// Giriş işlemi
 			var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
 
-			if (result.Succeeded)
-			{
-				return RedirectToAction("Index", "Home");
-			}
-			else
+
+			if (!result.Succeeded)
 			{
 				ModelState.AddModelError("", "Geçersiz email veya şifre.");
 				return View(model);
 			}
+
+			// ROLE GÖRE YÖNLENDİRME
+			var roles = await _userManager.GetRolesAsync(user);
+
+			if (roles.Contains("Admin"))
+				return RedirectToAction("Index", "Admin");
+
+			if (roles.Contains("Antrenör"))
+				return RedirectToAction("Index", "Antrenor");
+
+			// Varsayılan → Üye
+			return RedirectToAction("Index", "Uye");
 		}
 
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Logout()
+		{
+			await _signInManager.SignOutAsync();
+			return RedirectToAction ("Index", "Home");
+			
+		}
 	}
 }
