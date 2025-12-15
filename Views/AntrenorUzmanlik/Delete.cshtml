@@ -1,0 +1,27 @@
+﻿@model FitnessCenterReservationSystem.Models.AntrenorUzmanlik
+
+@{
+    ViewData["Title"] = "Uzmanlık Alanını Sil";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="alert alert-warning">
+    <p>Bu uzmanlık alanını antrenörden silmek istediğinizden emin misiniz?</p>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Antrenör</dt>
+        <dd class="col-sm-9">@Model.Antrenor?.Ad @Model.Antrenor?.Soyad</dd>
+
+        <dt class="col-sm-3">Uzmanlık Alanı</dt>
+        <dd class="col-sm-9">@Model.UzmanlikAlani?.Ad</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="AntrenorUzmanlikAlaniId" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

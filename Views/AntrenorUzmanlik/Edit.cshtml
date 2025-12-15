@@ -1,0 +1,28 @@
+﻿@model FitnessCenterReservationSystem.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Uzmanlık Alanlarını Düzenle";
+    var uzmanlikAlanlari = ViewBag.UzmanlikAlanlari as List<FitnessCenterReservationSystem.Models.UzmanlikAlani>;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label class="form-label">Uzmanlık Alanları</label>
+        @foreach (var uzmanlik in uzmanlikAlanlari)
+        {
+            var secili = Model.AntrenorUzmanlikAlanlari.Any(a => a.UzmanlikAlaniId == uzmanlik.Id);
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       name="secilenUzmanlikler" value="@uzmanlik.Id"
+                       @(secili ? "checked" : "") />
+                <label class="form-check-label">@uzmanlik.Ad</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
