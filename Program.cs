@@ -35,14 +35,16 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Authentication cookie  
+// Authentication cookie ayarlarý
 builder.Services.ConfigureApplicationCookie(options =>
 {
-	options.LoginPath = "/Identity/Account/Login";
-	options.LogoutPath = "/Identity/Account/Logout";
-	options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-});
+	options.LoginPath = "/Account/Login";
+	options.LogoutPath = "/Account/Logout";
+	options.AccessDeniedPath = "/Account/AccessDenied";
 
+	options.SlidingExpiration = true;
+	options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+});
 
 
 

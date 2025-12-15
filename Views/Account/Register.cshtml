@@ -3,12 +3,15 @@
 
 @{
     ViewData["Title"] = "Kayıt Ol";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+   // Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div class="account-container">
-    <div class="account-box">
-        <h2 class="text-center mb-4">Kayıt Ol</h2>
+<div class="container-fluid pt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-5">
+            <div class="account-box">
+                <h2 class="text-center mb-4">Kayıt Ol</h2>
+
         <form asp-action="Register" method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -75,7 +78,7 @@
 
 
 
-            <input type="submit" value="Kayıt Ol" class="btn btn-success w-100 p-2" />
+            <input type="submit" value="Kayıt Ol" class="btn btn-primary w-100 p-2" />
 
             <p class="text-center mt-2">
                 Zaten hesabınız var mı? <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Giriş Yap</a>
@@ -85,9 +88,10 @@
                 <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Geri Dön</a>
             </div>
         </form>
+            </div>
+        </div>
     </div>
 </div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");

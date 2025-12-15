@@ -1,6 +1,10 @@
-﻿<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light">
+﻿@using Microsoft.AspNetCore.Identity
+@using FitnessCenterReservationSystem.Models
+@inject UserManager<ApplicationUser> UserManager
 
-    <!-- Logo / Brand -->
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light">
+
+    <!-- Logo -->
     <div class="sidebar-brand p-3 text-center">
         <a href="/" class="text-decoration-none fw-bold fs-5">
             <i class="bi bi-activity"></i> Fitness Center
@@ -9,84 +13,18 @@
 
     <div class="sidebar-wrapper">
 
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-            <ul class="nav flex-column" role="menu">
-
-                <!-- Dashboard -->
-                <li class="nav-item">
-                    <a href="/Admin" class="nav-link">
-                        <i class="bi bi-speedometer2 me-2"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-
-                <!-- Salon Yönetimi -->
-                <li class="nav-item">
-                    <a href="/Salonlar" class="nav-link">
-                        <i class="bi bi-building me-2"></i>
-                        <p>Salonlar</p>
-                    </a>
-                </li>
-
-                <!-- Hizmet Yönetimi -->
-                <li class="nav-item">
-                    <a href="/Hizmetler" class="nav-link">
-                        <i class="bi bi-grid-3x3-gap me-2"></i>
-                        <p>Hizmetler</p>
-                    </a>
-                </li>
-
-                <!-- Uzmanlık Alanları -->
-                <li class="nav-item">
-                    <a href="@Url.Action("Index", "UzmanlikAlani")" class="nav-link">
-                        <i class="bi bi-patch-check me-2"></i>
-                        <p>Uzmanlık Alanları</p>
-                    </a>
-                </li>
-
-                <!-- Antrenör Yönetimi -->
-                <li class="nav-item">
-                    <a href="/Antrenorler" class="nav-link">
-                        <i class="bi bi-person-workspace me-2"></i>
-                        <p>Antrenörler</p>
-                    </a>
-                </li>
-
-                <!-- Randevular -->
-                <li class="nav-item">
-                    <a href="/Randevular" class="nav-link">
-                        <i class="bi bi-calendar-week me-2"></i>
-                        <p>Randevular</p>
-                    </a>
-                </li>
-
-                <!-- Üyeler -->
-                <li class="nav-item">
-                    <a href="/Uyeler" class="nav-link">
-                        <i class="bi bi-people me-2"></i>
-                        <p>Üyeler</p>
-                    </a>
-                </li>
-
-                <!-- Raporlar -->
-                <li class="nav-item">
-                    <a href="/Raporlar" class="nav-link">
-                        <i class="bi bi-file-earmark-bar-graph me-2"></i>
-                        <p>Raporlar</p>
-                    </a>
-                </li>
-
-                <!-- Ayarlar -->
-                <li class="nav-item">
-                    <a href="/Ayarlar" class="nav-link">
-                        <i class="bi bi-gear me-2"></i>
-                        <p>Ayarlar</p>
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
+        @if (User.IsInRole("Admin"))
+        {
+            @await Html.PartialAsync("_SidebarAdmin")
+        }
+        else if (User.IsInRole("Antrenör"))
+        {
+            @await Html.PartialAsync("_SidebarAntrenor")
+        }
+        else if (User.IsInRole("Üye"))
+        {
+            @await Html.PartialAsync("_SidebarUye")
+        }
 
     </div>
 </aside>

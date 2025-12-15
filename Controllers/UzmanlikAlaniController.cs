@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FitnessCenterReservationSystem.Data;
 using FitnessCenterReservationSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace FitnessCenterReservationSystem
+namespace FitnessCenterReservationSystem.Controllers
 {
-    public class UzmanlikAlaniController : Controller
+	[Authorize(Roles = "Admin")]
+	public class UzmanlikAlaniController : Controller
     {
         private readonly ApplicationDbContext _context;
 

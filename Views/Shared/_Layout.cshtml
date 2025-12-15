@@ -45,6 +45,11 @@
             <div class="container-fluid pt-3">
 				@await Html.PartialAsync("_Notification")    
 				@RenderBody()
+
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    @await Html.PartialAsync("_PublicFooter")
+                }
             </div>
         </main>
 
@@ -80,5 +85,6 @@
 <!-- AdminLTE JS -->
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/dist/js/adminlte.js"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </html>
