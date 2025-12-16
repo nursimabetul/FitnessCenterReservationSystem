@@ -4,6 +4,8 @@
 	{
 		public int Id { get; set; }
 		public string Ad { get; set; } = string.Empty;
+		public string Adres { get; set; } = string.Empty;
+		public string telefon { get; set; } = string.Empty;
 
 		public TimeSpan AcilisSaati { get; set; }
 		public TimeSpan KapanisSaati { get; set; }

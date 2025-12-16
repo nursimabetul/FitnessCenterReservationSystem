@@ -1,0 +1,29 @@
+﻿@model FitnessCenterReservationSystem.Models.Hizmet
+
+@{
+    ViewData["Title"] = "Hizmet Detay";
+}
+
+<h2>Hizmet Detay</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Ad</th>
+        <td>@Model.Ad</td>
+    </tr>
+    <tr>
+        <th>Süre</th>
+        <td>@Model.SureDakika dakika</td>
+    </tr>
+    <tr>
+        <th>Ücret</th>
+        <td>@Model.Ucret ₺</td>
+    </tr>
+    <tr>
+        <th>Salon</th>
+        <td>@Model.Salon?.Ad</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Düzenle</a>
+<a asp-action="Index" class="btn btn-secondary">Geri</a>

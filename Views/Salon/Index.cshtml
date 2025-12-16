@@ -1,0 +1,39 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Salon>
+
+@{
+    ViewData["Title"] = "Salonlar";
+}
+
+<h2>Salonlar</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">➕ Yeni Salon</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Adres</th>
+            <th>Telefon</th>
+            <th>Açılış</th>
+            <th>Kapanış</th>
+            <th style="width:200px">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Ad</td>
+                <td>@item.Adres</td>
+                <td>@item.telefon</td>
+                <td>@item.AcilisSaati</td>
+                <td>@item.KapanisSaati</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detay</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Düzenle</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -56,8 +56,10 @@ namespace FitnessCenterReservationSystem.Data
 			// ------------------------------------------------------------
 			// 4) Antrenor ↔ Hizmet (Many-to-Many)
 			// ------------------------------------------------------------
+
+
 			builder.Entity<AntrenorHizmet>()
-				.HasKey(x => x.AntrenorHizmetId);
+				.HasKey(x => new { x.AntrenorId, x.HizmetId });
 
 			builder.Entity<AntrenorHizmet>()
 				.HasOne(x => x.Antrenor)
@@ -65,6 +67,11 @@ namespace FitnessCenterReservationSystem.Data
 				.HasForeignKey(x => x.AntrenorId)
 				.OnDelete(DeleteBehavior.Restrict);
 
+			builder.Entity<AntrenorHizmet>()
+				.HasOne(x => x.Hizmet)
+				.WithMany(h => h.AntrenorHizmetler)
+				.HasForeignKey(x => x.HizmetId)
+				.OnDelete(DeleteBehavior.Cascade);
 
 
 			// ------------------------------------------------------------
@@ -84,6 +91,11 @@ namespace FitnessCenterReservationSystem.Data
 				.WithMany()
 				.HasForeignKey(x => x.UzmanlikAlaniId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			// Hizmet Ücretinin ondalık hassasiyetini ayarla
+			builder.Entity<Hizmet>()
+				.Property(h => h.Ucret)
+				.HasPrecision(10, 2);
 
 			// ------------------------------------------------------------
 			// 6) Salon ↔ Hizmet (One-to-Many)

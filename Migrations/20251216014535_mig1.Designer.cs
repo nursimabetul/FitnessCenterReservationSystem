@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FitnessCenterReservationSystem.Data.Migrations
+namespace FitnessCenterReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251213172145_mig3")]
-    partial class mig3
+    [Migration("20251216014535_mig1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,21 +55,16 @@ namespace FitnessCenterReservationSystem.Data.Migrations
 
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.AntrenorHizmet", b =>
                 {
-                    b.Property<int>("AntrenorHizmetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AntrenorHizmetId"));
-
                     b.Property<string>("AntrenorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("HizmetId")
                         .HasColumnType("int");
 
-                    b.HasKey("AntrenorHizmetId");
+                    b.Property<int>("AntrenorHizmetId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("AntrenorId");
+                    b.HasKey("AntrenorId", "HizmetId");
 
                     b.HasIndex("HizmetId");
 
@@ -87,15 +82,10 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                     b.Property<int>("AntrenorUzmanlikAlaniId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HizmetId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UzmanlikAlaniId1")
                         .HasColumnType("int");
 
                     b.HasKey("AntrenorId", "UzmanlikAlaniId");
-
-                    b.HasIndex("HizmetId");
 
                     b.HasIndex("UzmanlikAlaniId");
 
@@ -210,7 +200,8 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Ucret")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("HizmetId");
 
@@ -235,6 +226,9 @@ namespace FitnessCenterReservationSystem.Data.Migrations
 
                     b.Property<TimeSpan>("BitisSaati")
                         .HasColumnType("time");
+
+                    b.Property<int>("Durum")
+                        .HasColumnType("int");
 
                     b.Property<int>("HizmetId")
                         .HasColumnType("int");
@@ -450,10 +444,11 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                     b.HasOne("FitnessCenterReservationSystem.Models.ApplicationUser", "Antrenor")
                         .WithMany("AntrenorHizmetler")
                         .HasForeignKey("AntrenorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FitnessCenterReservationSystem.Models.Hizmet", "Hizmet")
-                        .WithMany()
+                        .WithMany("AntrenorHizmetler")
                         .HasForeignKey("HizmetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -470,10 +465,6 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .HasForeignKey("AntrenorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("FitnessCenterReservationSystem.Models.Hizmet", null)
-                        .WithMany("AntrenorHizmetler")
-                        .HasForeignKey("HizmetId");
 
                     b.HasOne("FitnessCenterReservationSystem.Models.UzmanlikAlani", "UzmanlikAlani")
                         .WithMany()

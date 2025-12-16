@@ -1,0 +1,33 @@
+﻿@model FitnessCenterReservationSystem.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Detayı";
+}
+
+<h2>Salon Detayı</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Ad</th>
+        <td>@Model.Ad</td>
+    </tr>
+    <tr>
+        <th>Adres</th>
+        <td>@Model.Adres</td>
+    </tr>
+    <tr>
+        <th>Telefon</th>
+        <td>@Model.telefon</td>
+    </tr>
+    <tr>
+        <th>Açılış Saati</th>
+        <td>@Model.AcilisSaati</td>
+    </tr>
+    <tr>
+        <th>Kapanış Saati</th>
+        <td>@Model.KapanisSaati</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Düzenle</a>
+<a asp-action="Index" class="btn btn-secondary">Geri</a>

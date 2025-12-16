@@ -1,0 +1,30 @@
+﻿@model FitnessCenterReservationSystem.Models.Hizmet
+
+<h2>Yeni Hizmet</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SalonId" class="form-label">Salon</label>
+        <select asp-for="SalonId" asp-items="ViewBag.Salonlar" class="form-select">
+            <option value="">-- Salon Seç --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Ucret" class="form-label"></label>
+        <input asp-for="Ucret" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SureDakika" class="form-label">Süre (dk)</label>
+        <input asp-for="SureDakika" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

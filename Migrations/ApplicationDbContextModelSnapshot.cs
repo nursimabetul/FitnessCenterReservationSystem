@@ -4,23 +4,20 @@ using FitnessCenterReservationSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FitnessCenterReservationSystem.Data.Migrations
+namespace FitnessCenterReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251213083913_mig2")]
-    partial class mig2
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.22")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -55,21 +52,16 @@ namespace FitnessCenterReservationSystem.Data.Migrations
 
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.AntrenorHizmet", b =>
                 {
-                    b.Property<int>("AntrenorHizmetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AntrenorHizmetId"));
-
                     b.Property<string>("AntrenorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("HizmetId")
                         .HasColumnType("int");
 
-                    b.HasKey("AntrenorHizmetId");
+                    b.Property<int>("AntrenorHizmetId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("AntrenorId");
+                    b.HasKey("AntrenorId", "HizmetId");
 
                     b.HasIndex("HizmetId");
 
@@ -87,15 +79,10 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                     b.Property<int>("AntrenorUzmanlikAlaniId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HizmetId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UzmanlikAlaniId1")
                         .HasColumnType("int");
 
                     b.HasKey("AntrenorId", "UzmanlikAlaniId");
-
-                    b.HasIndex("HizmetId");
 
                     b.HasIndex("UzmanlikAlaniId");
 
@@ -149,6 +136,9 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("Onaylandi")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -191,11 +181,11 @@ namespace FitnessCenterReservationSystem.Data.Migrations
 
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.Hizmet", b =>
                 {
-                    b.Property<int>("HizmetId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HizmetId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Ad")
                         .HasColumnType("nvarchar(max)");
@@ -207,9 +197,10 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Ucret")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("HizmetId");
+                    b.HasKey("Id");
 
                     b.HasIndex("SalonId");
 
@@ -232,6 +223,9 @@ namespace FitnessCenterReservationSystem.Data.Migrations
 
                     b.Property<TimeSpan>("BitisSaati")
                         .HasColumnType("time");
+
+                    b.Property<int>("Durum")
+                        .HasColumnType("int");
 
                     b.Property<int>("HizmetId")
                         .HasColumnType("int");
@@ -273,8 +267,16 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Adres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<TimeSpan>("KapanisSaati")
                         .HasColumnType("time");
+
+                    b.Property<string>("telefon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -447,10 +449,11 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                     b.HasOne("FitnessCenterReservationSystem.Models.ApplicationUser", "Antrenor")
                         .WithMany("AntrenorHizmetler")
                         .HasForeignKey("AntrenorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FitnessCenterReservationSystem.Models.Hizmet", "Hizmet")
-                        .WithMany()
+                        .WithMany("AntrenorHizmetler")
                         .HasForeignKey("HizmetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -467,10 +470,6 @@ namespace FitnessCenterReservationSystem.Data.Migrations
                         .HasForeignKey("AntrenorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("FitnessCenterReservationSystem.Models.Hizmet", null)
-                        .WithMany("AntrenorHizmetler")
-                        .HasForeignKey("HizmetId");
 
                     b.HasOne("FitnessCenterReservationSystem.Models.UzmanlikAlani", "UzmanlikAlani")
                         .WithMany()

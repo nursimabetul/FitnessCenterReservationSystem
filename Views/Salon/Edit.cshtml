@@ -1,0 +1,39 @@
+﻿@model FitnessCenterReservationSystem.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Düzenle";
+}
+
+<h2>Salon Düzenle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Adres" class="form-label"></label>
+        <input asp-for="Adres" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="telefon" class="form-label"></label>
+        <input asp-for="telefon" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AcilisSaati" class="form-label"></label>
+        <input asp-for="AcilisSaati" type="time" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="KapanisSaati" class="form-label"></label>
+        <input asp-for="KapanisSaati" type="time" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Güncelle</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

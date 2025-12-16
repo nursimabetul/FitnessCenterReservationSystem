@@ -1,0 +1,22 @@
+﻿@model FitnessCenterReservationSystem.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Sil";
+}
+
+<h2>Salon Sil</h2>
+
+<div class="alert alert-danger">
+    <strong>Dikkat!</strong> Bu salonu silmek istediğinize emin misiniz?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Salon Adı</dt>
+    <dd class="col-sm-9">@Model.Ad</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

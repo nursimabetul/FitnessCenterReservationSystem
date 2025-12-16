@@ -25,16 +25,12 @@
 		// Hizmet
 		public int HizmetId { get; set; }
 		public Hizmet? Hizmet { get; set; }
-
-
-
-
-
-
-
+		public RandevuDurum Durum { get; set; } = RandevuDurum.Beklemede;
 
 
 
 
 	}
+
+
 }

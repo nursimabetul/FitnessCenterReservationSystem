@@ -1,5 +1,6 @@
 ﻿using FitnessCenterReservationSystem.Data;
 using FitnessCenterReservationSystem.Models;
+using FitnessCenterReservationSystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,18 +38,32 @@ namespace FitnessCenterReservationSystem.Controllers
 		// GET: Edit
 		public async Task<IActionResult> Edit(string id)
 		{
-			if (id == null) return NotFound();
-
 			var antrenor = await _context.Users
 				.Include(u => u.AntrenorUzmanlikAlanlari)
-				.ThenInclude(a => a.UzmanlikAlani)
 				.FirstOrDefaultAsync(u => u.Id == id);
 
-			if (antrenor == null) return NotFound();
+			if (antrenor == null)
+				return NotFound();
 
-			ViewBag.UzmanlikAlanlari = await _context.UzmanlikAlanlari.ToListAsync();
-			return View(antrenor);
+			var tumUzmanliklar = await _context.UzmanlikAlanlari.ToListAsync();
+
+			var model = new AntrenorUzmanlikViewModel
+			{
+				AntrenorId = antrenor.Id,
+				AdSoyad = antrenor.Ad + " " + antrenor.Soyad,
+				Email = antrenor.Email,
+				TumUzmanliklar = tumUzmanliklar.Select(u => new UzmanlikCheckboxVM
+				{
+					Id = u.Id,
+					Ad = u.Ad,
+					Secili = antrenor.AntrenorUzmanlikAlanlari
+						.Any(x => x.UzmanlikAlaniId == u.Id)
+				}).ToList()
+			};
+
+			return View(model); // ✅
 		}
+
 
 		// POST: Edit
 		[HttpPost]

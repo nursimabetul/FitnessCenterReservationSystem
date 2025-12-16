@@ -1,0 +1,37 @@
+﻿@model FitnessCenterReservationSystem.Models.Salon
+
+@{
+    ViewData["Title"] = "Salon Ekle";
+}
+
+<h2>Yeni Salon</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Adres" class="form-label"></label>
+        <input asp-for="Adres" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="telefon" class="form-label"></label>
+        <input asp-for="telefon" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AcilisSaati" class="form-label"></label>
+        <input asp-for="AcilisSaati" type="time" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="KapanisSaati" class="form-label"></label>
+        <input asp-for="KapanisSaati" type="time" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
