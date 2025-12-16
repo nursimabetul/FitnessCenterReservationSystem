@@ -1,43 +1,19 @@
 ﻿@model FitnessCenterReservationSystem.Models.Hizmet
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Hizmet Detay";
 }
 
-<h1>Details</h1>
+<h2>Hizmet Detay</h2>
 
-<div>
-    <h4>Hizmet</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ad)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SureDakika)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SureDakika)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ucret)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ucret)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Salon)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Salon.Ad)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Ad</h5>
+        <p class="card-text"><strong>Süre:</strong> @Model.SureDakika dk</p>
+        <p class="card-text"><strong>Ücret:</strong> @Model.Ucret.ToString("C")</p>
+        <p class="card-text"><strong>Salon:</strong> @Model.Salon?.Ad</p>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Geri</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning mt-3">Düzenle</a>

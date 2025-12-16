@@ -10,23 +10,23 @@ using FitnessCenterReservationSystem.Models;
 
 namespace FitnessCenterReservationSystem
 {
-    public class HizmetController : Controller
+    public class HaberController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public HizmetController(ApplicationDbContext context)
+        public HaberController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Hizmet
+        // GET: Haber
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Hizmetler.Include(h => h.Salon);
+            var applicationDbContext = _context.Haberler.Include(h => h.Olusturan).Include(h => h.Salon);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Hizmet/Details/5
+        // GET: Haber/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,45 @@ namespace FitnessCenterReservationSystem
                 return NotFound();
             }
 
-            var hizmet = await _context.Hizmetler
+            var haber = await _context.Haberler
+                .Include(h => h.Olusturan)
                 .Include(h => h.Salon)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (hizmet == null)
+            if (haber == null)
             {
                 return NotFound();
             }
 
-            return View(hizmet);
+            return View(haber);
         }
 
-        // GET: Hizmet/Create
+        // GET: Haber/Create
         public IActionResult Create()
         {
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad");
             return View();
         }
 
-        // POST: Hizmet/Create
+        // POST: Haber/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Ad,SureDakika,Ucret,SalonId")] Hizmet hizmet)
+        public async Task<IActionResult> Create([Bind("Id,Baslik,Icerik,Tarih,SalonId,OlusturanId")] Haber haber)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(hizmet);
+                _context.Add(haber);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", hizmet.SalonId);
-            return View(hizmet);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
+            return View(haber);
         }
 
-        // GET: Hizmet/Edit/5
+        // GET: Haber/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +80,24 @@ namespace FitnessCenterReservationSystem
                 return NotFound();
             }
 
-            var hizmet = await _context.Hizmetler.FindAsync(id);
-            if (hizmet == null)
+            var haber = await _context.Haberler.FindAsync(id);
+            if (haber == null)
             {
                 return NotFound();
             }
-            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", hizmet.SalonId);
-            return View(hizmet);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
+            return View(haber);
         }
 
-        // POST: Hizmet/Edit/5
+        // POST: Haber/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Ad,SureDakika,Ucret,SalonId")] Hizmet hizmet)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Baslik,Icerik,Tarih,SalonId,OlusturanId")] Haber haber)
         {
-            if (id != hizmet.Id)
+            if (id != haber.Id)
             {
                 return NotFound();
             }
@@ -102,12 +106,12 @@ namespace FitnessCenterReservationSystem
             {
                 try
                 {
-                    _context.Update(hizmet);
+                    _context.Update(haber);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HizmetExists(hizmet.Id))
+                    if (!HaberExists(haber.Id))
                     {
                         return NotFound();
                     }
@@ -118,11 +122,12 @@ namespace FitnessCenterReservationSystem
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", hizmet.SalonId);
-            return View(hizmet);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
+            return View(haber);
         }
 
-        // GET: Hizmet/Delete/5
+        // GET: Haber/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +135,36 @@ namespace FitnessCenterReservationSystem
                 return NotFound();
             }
 
-            var hizmet = await _context.Hizmetler
+            var haber = await _context.Haberler
+                .Include(h => h.Olusturan)
                 .Include(h => h.Salon)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (hizmet == null)
+            if (haber == null)
             {
                 return NotFound();
             }
 
-            return View(hizmet);
+            return View(haber);
         }
 
-        // POST: Hizmet/Delete/5
+        // POST: Haber/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var hizmet = await _context.Hizmetler.FindAsync(id);
-            if (hizmet != null)
+            var haber = await _context.Haberler.FindAsync(id);
+            if (haber != null)
             {
-                _context.Hizmetler.Remove(hizmet);
+                _context.Haberler.Remove(haber);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool HizmetExists(int id)
+        private bool HaberExists(int id)
         {
-            return _context.Hizmetler.Any(e => e.Id == id);
+            return _context.Haberler.Any(e => e.Id == id);
         }
     }
 }

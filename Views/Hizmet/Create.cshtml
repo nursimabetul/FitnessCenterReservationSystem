@@ -1,48 +1,46 @@
 ﻿@model FitnessCenterReservationSystem.Models.Hizmet
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Yeni Hizmet";
 }
 
-<h1>Create</h1>
+<h2>Yeni Hizmet</h2>
 
-<h4>Hizmet</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Ad" class="control-label"></label>
-                <input asp-for="Ad" class="form-control" />
-                <span asp-validation-for="Ad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SureDakika" class="control-label"></label>
-                <input asp-for="SureDakika" class="form-control" />
-                <span asp-validation-for="SureDakika" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ucret" class="control-label"></label>
-                <input asp-for="Ucret" class="form-control" />
-                <span asp-validation-for="Ucret" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SalonId" class="control-label"></label>
-                <select asp-for="SalonId" class ="form-control" asp-items="ViewBag.SalonId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="mb-3">
+        <label asp-for="SureDakika" class="form-label"></label>
+        <input asp-for="SureDakika" class="form-control" />
+        <span asp-validation-for="SureDakika" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Ucret" class="form-label"></label>
+        <input asp-for="Ucret" class="form-control" />
+        <span asp-validation-for="Ucret" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SalonId" class="form-label"></label>
+        <select asp-for="SalonId" asp-items="ViewBag.Salonlar" class="form-select">
+            <option value="">-- Salon Seçin --</option>
+        </select>
+        <span asp-validation-for="SalonId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
