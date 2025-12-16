@@ -1,7 +1,98 @@
 ﻿@{
-    ViewData["Title"] = "Admin Sayfası";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Admin Sayfasına Hoşgeldiniz.</h1>
+<h2 class="mb-4">
+    <i class="bi bi-speedometer2 me-2"></i>
+    Admin Dashboard
+</h2>
+
+<div class="row g-4">
+
+    <!-- Salonlar Kartı -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-white bg-primary">
+            <div class="card-body d-flex align-items-center">
+                <i class="bi bi-building fs-1 me-3"></i>
+                <div>
+                    <h5 class="card-title mb-1">Salonlar</h5>
+                    <p class="card-text fs-4 mb-0">@ViewBag.SalonCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hizmetler Kartı -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-white bg-success">
+            <div class="card-body d-flex align-items-center">
+                <i class="bi bi-clipboard-check fs-1 me-3"></i>
+                <div>
+                    <h5 class="card-title mb-1">Hizmetler</h5>
+                    <p class="card-text fs-4 mb-0">@ViewBag.HizmetCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kampanyalar Kartı -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-white bg-warning">
+            <div class="card-body d-flex align-items-center">
+                <i class="bi bi-tag fs-1 me-3"></i>
+                <div>
+                    <h5 class="card-title mb-1">Kampanyalar</h5>
+                    <p class="card-text fs-4 mb-0">@ViewBag.KampanyaCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Randevular Kartı -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 text-white bg-danger">
+            <div class="card-body d-flex align-items-center">
+                <i class="bi bi-calendar-check fs-1 me-3"></i>
+                <div>
+                    <h5 class="card-title mb-1">Randevular</h5>
+                    <p class="card-text fs-4 mb-0">@ViewBag.RandevuCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr class="my-4" />
+
+<div class="row g-4">
+    <!-- Son Eklenen Salonlar -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+                <i class="bi bi-building me-2"></i> Son Eklenen Salonlar
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var salon in ViewBag.RecentSalons)
+                {
+                    <li class="list-group-item">@salon.Ad</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Son Eklenen Antrenörler -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+                <i class="bi bi-person-badge me-2"></i> Son Eklenen Antrenörler
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var trainer in ViewBag.RecentTrainers)
+                {
+                    <li class="list-group-item">@($"{trainer.Ad} {trainer.Soyad}")</li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>

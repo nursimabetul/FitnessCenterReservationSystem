@@ -1,7 +1,10 @@
-﻿using FitnessCenterReservationSystem.Models;
+﻿using FitnessCenterReservationSystem.Data;
+using FitnessCenterReservationSystem.Models;
 using FitnessCenterReservationSystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace FitnessCenterReservationSystem.Controllers
@@ -12,14 +15,18 @@ namespace FitnessCenterReservationSystem.Controllers
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 
+		private readonly ApplicationDbContext _context;
+
 		public AccountController(
 			UserManager<ApplicationUser> userManager,
 			RoleManager<IdentityRole> roleManager,
-			SignInManager<ApplicationUser> signInManager)
+			SignInManager<ApplicationUser> signInManager,
+			ApplicationDbContext context)  // <-- ekledik
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
 			_signInManager = signInManager;
+			_context = context; // <-- ekledik
 		}
 
 		// GET: Register
@@ -193,6 +200,98 @@ namespace FitnessCenterReservationSystem.Controllers
 		public IActionResult AccessDenied()
 		{
 			return View();
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> Profile()
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+				return RedirectToAction("Login");
+
+			var roles = await _userManager.GetRolesAsync(user);
+			bool isAntrenor = roles.Contains("Antrenör");
+
+			var model = new ProfileViewModel
+			{
+				Id = user.Id,
+				Ad = user.Ad,
+				Soyad = user.Soyad,
+				Email = user.Email,
+				DogumTarihi = user.DogumTarihi,
+				Boy = user.Boy,
+				Kilo = user.Kilo
+			};
+
+			if (isAntrenor)
+			{
+				// Salon listesi
+				model.Salonlar = _context.Salonlar
+					.Select(s => new SelectListItem { Text = s.Ad, Value = s.Id.ToString() })
+					.ToList();
+
+				model.SalonId = user.SalonId;
+
+				// Uzmanlık alanları
+				model.UzmanlikAlanlari = _context.UzmanlikAlanlari
+					.Select(u => new SelectListItem { Text = u.Ad, Value = u.Id.ToString() })
+					.ToList();
+
+				model.SecilenUzmanliklar = _context.AntrenorUzmanlikAlanlari
+					.Where(a => a.AntrenorId == user.Id)
+					.Select(a => a.UzmanlikAlaniId)
+					.ToList();
+			}
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Profile(ProfileViewModel model)
+		{
+			if (!ModelState.IsValid)
+				return View(model);
+
+			var user = await _userManager.FindByIdAsync(model.Id);
+			if (user == null)
+				return RedirectToAction("Login");
+
+			user.Ad = model.Ad;
+			user.Soyad = model.Soyad;
+			user.DogumTarihi = model.DogumTarihi;
+			user.Boy = model.Boy;
+			user.Kilo = model.Kilo;
+
+			// Antrenör alanları
+			var roles = await _userManager.GetRolesAsync(user);
+			if (roles.Contains("Antrenör"))
+			{
+				user.SalonId = model.SalonId;
+
+				// Uzmanlıkları güncelle
+				var mevcut = _context.AntrenorUzmanlikAlanlari.Where(a => a.AntrenorId == user.Id);
+				_context.AntrenorUzmanlikAlanlari.RemoveRange(mevcut);
+
+				if (model.SecilenUzmanliklar != null)
+				{
+					foreach (var uzmId in model.SecilenUzmanliklar)
+					{
+						_context.AntrenorUzmanlikAlanlari.Add(new AntrenorUzmanlik
+						{
+							AntrenorId = user.Id,
+							UzmanlikAlaniId = uzmId
+						});
+					}
+				}
+			}
+
+			await _userManager.UpdateAsync(user);
+			await _context.SaveChangesAsync();
+
+			TempData["Success"] = "Profiliniz güncellendi.";
+			return RedirectToAction("Profile");
 		}
 
 	}

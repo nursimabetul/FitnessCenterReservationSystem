@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FitnessCenterReservationSystem.Data;
 using FitnessCenterReservationSystem.Models;
 
-namespace FitnessCenterReservationSystem
+namespace FitnessCenterReservationSystem.Controllers
 {
     public class HaberController : Controller
     {

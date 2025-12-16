@@ -4,19 +4,44 @@
     ViewData["Title"] = "Hizmet Sil";
 }
 
-<h2>Hizmet Sil</h2>
+<h4 class="mb-3 text-danger">
+    <i class="bi bi-x-circle me-1"></i>
+    Hizmet Sil
+</h4>
 
-<div class="alert alert-warning">
-    <p>Bu hizmeti silmek istediğinize emin misiniz?</p>
-    <h5>@Model.Ad</h5>
-    <p><strong>Süre:</strong> @Model.SureDakika dk</p>
-    <p><strong>Ücret:</strong> @Model.Ucret.ToString("C")</p>
-    <p><strong>Salon:</strong> @Model.Salon?.Ad</p>
-</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body p-3">
 
-<form asp-action="DeleteConfirmed" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Sil</button>
-    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-</form>
+        <p class="small text-muted mb-3">
+            Bu hizmeti silmek istediğinize emin misiniz?
+        </p>
+
+        <dl class="row mb-3 small">
+            <dt class="col-sm-3 fw-semibold">Hizmet Adı</dt>
+            <dd class="col-sm-9">@Model.Ad</dd>
+
+            <dt class="col-sm-3 fw-semibold">Süre (dk)</dt>
+            <dd class="col-sm-9">@Model.SureDakika</dd>
+
+            <dt class="col-sm-3 fw-semibold">Ücret</dt>
+            <dd class="col-sm-9">@Model.Ucret.ToString("C")</dd>
+
+            <dt class="col-sm-3 fw-semibold">Salon</dt>
+            <dd class="col-sm-9">@Model.Salon?.Ad</dd>
+        </dl>
+
+        <form asp-action="DeleteConfirmed" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <button type="submit" class="btn btn-danger btn-sm px-3">
+                <i class="bi bi-trash me-1"></i> Sil
+            </button>
+
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">
+                <i class="bi bi-arrow-left me-1"></i> İptal
+            </a>
+        </form>
+
+    </div> <!-- card-body kapanışı -->
+</div> <!-- card kapanışı -->

@@ -1,55 +1,68 @@
 ﻿@model FitnessCenterReservationSystem.Models.Haber
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Haber Düzenle";
 }
 
-<h1>Edit</h1>
+<h4 class="mb-3">
+    <i class="bi bi-pencil-square text-primary me-1"></i>
+    Haber Düzenle
+</h4>
 
-<h4>Haber</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="card shadow-sm border-0">
+    <div class="card-body p-3">
+
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Baslik" class="control-label"></label>
-                <input asp-for="Baslik" class="form-control" />
-                <span asp-validation-for="Baslik" class="text-danger"></span>
+
+            <div class="mb-2">
+                <label asp-for="Baslik" class="form-label small fw-semibold"></label>
+                <input asp-for="Baslik" class="form-control form-control-sm" />
+                <span asp-validation-for="Baslik" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Icerik" class="control-label"></label>
-                <input asp-for="Icerik" class="form-control" />
-                <span asp-validation-for="Icerik" class="text-danger"></span>
+
+            <div class="mb-2">
+                <label asp-for="Icerik" class="form-label small fw-semibold"></label>
+                <input asp-for="Icerik" class="form-control form-control-sm" />
+                <span asp-validation-for="Icerik" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Tarih" class="control-label"></label>
-                <input asp-for="Tarih" class="form-control" />
-                <span asp-validation-for="Tarih" class="text-danger"></span>
+
+            <div class="mb-2">
+                <label asp-for="Tarih" class="form-label small fw-semibold"></label>
+                <input asp-for="Tarih" class="form-control form-control-sm" />
+                <span asp-validation-for="Tarih" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SalonId" class="control-label"></label>
-                <select asp-for="SalonId" class="form-control" asp-items="ViewBag.SalonId"></select>
-                <span asp-validation-for="SalonId" class="text-danger"></span>
+
+            <div class="mb-2">
+                <label asp-for="SalonId" class="form-label small fw-semibold"></label>
+                <select asp-for="SalonId" class="form-select form-select-sm" asp-items="ViewBag.SalonId"></select>
+                <span asp-validation-for="SalonId" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="OlusturanId" class="control-label"></label>
-                <select asp-for="OlusturanId" class="form-control" asp-items="ViewBag.OlusturanId"></select>
-                <span asp-validation-for="OlusturanId" class="text-danger"></span>
+
+            <div class="mb-2">
+                <label asp-for="OlusturanId" class="form-label small fw-semibold"></label>
+                <select asp-for="OlusturanId" class="form-select form-select-sm" asp-items="ViewBag.OlusturanId"></select>
+                <span asp-validation-for="OlusturanId" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary btn-sm px-3">
+                    <i class="bi bi-check2 me-1"></i> Kaydet
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Geri
+                </a>
             </div>
         </form>
+
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

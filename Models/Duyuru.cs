@@ -6,16 +6,19 @@ namespace FitnessCenterReservationSystem.Models
 	{
 		public int Id { get; set; }
 
-		[Required]
 		[StringLength(100)]
 		[Display(Name = "Başlık")]
+		[Required(ErrorMessage = "Başlık Alanının yazılması zorunludur.")]
+
 		public string Baslik { get; set; } = string.Empty;
 
-		[Required]
+		[Required(ErrorMessage = "İçerik Alanının yazılması zorunludur.")]
 		[Display(Name = "İçerik")]
 		public string Icerik { get; set; } = string.Empty;
 
 		[Display(Name = "Yayın Tarihi")]
+		[Required(ErrorMessage = "Yayın Tarihinin seçilmesi zorunludur.")]
+
 		public DateTime Tarih { get; set; } = DateTime.Now;
 
 		// Hangi salona ait
@@ -24,6 +27,8 @@ namespace FitnessCenterReservationSystem.Models
 		public Salon? Salon { get; set; }
 
 		// Opsiyonel: Duyuruyu kim oluşturdu
+		[Display(Name = "Duyuruyu Oluşturan Kullanıcı")]
+
 		public string? OlusturanId { get; set; }
 		public ApplicationUser? Olusturan { get; set; }
 	}

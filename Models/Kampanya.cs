@@ -5,28 +5,38 @@ namespace FitnessCenterReservationSystem.Models
 {
 	public class Kampanya
 	{
-		public int Id { get; set; }
 
+		public int Id { get; set; }
+		[Display(Name = "Kampanya Başlığı")]
 		[Required(ErrorMessage = "Kampanya başlığı zorunludur.")]
 		[StringLength(100, ErrorMessage = "Başlık en fazla 100 karakter olabilir.")]
 		public string? Baslik { get; set; }
+		[Display(Name = "Kampanya Açıklaması")]
 
 		[Required(ErrorMessage = "Kampanya açıklaması zorunludur.")]
 		[StringLength(500, ErrorMessage = "Açıklama en fazla 500 karakter olabilir.")]
+
 		public string? Aciklama { get; set; }
 
+		[Display(Name = "Kampanya Başlangıç Tarihi")]
+		[Required(ErrorMessage = "Başlangıç tarihi zorunludur.")]
 		// Kampanya başlangıç ve bitiş tarihleri
 		[DataType(DataType.Date)]
 		public DateTime BaslangicTarihi { get; set; }
+		[Display(Name = "Kampanya Bitiş Tarihi")]
 
+		[Required(ErrorMessage = "Bitiş tarihi zorunludur.")]
 		[DataType(DataType.Date)]
 		public DateTime BitisTarihi { get; set; }
 
 		// Opsiyonel: Kampanya hangi salon veya hizmete ait
+		[Display (Name = "Salon")]
+
 		public int? SalonId { get; set; }
 
 		[ValidateNever]
 		public Salon? Salon { get; set; }
+		[Display(Name = "Hizmet")]
 
 		public int? HizmetId { get; set; }
 

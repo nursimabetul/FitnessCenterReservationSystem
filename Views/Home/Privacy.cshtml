@@ -1,6 +1,111 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Gizlilik Politikası";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+
+            <h1 class="text-center mb-5 fw-bold text-primary">
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                Gizlilik Politikası
+            </h1>
+
+            <div class="row g-4">
+
+                @* Bilgi Toplama *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-info"><i class="bi bi-database-fill me-2"></i>Bilgi Toplama</h4>
+                        <p>
+                            Web sitemiz, kullanıcılarımızdan yalnızca gerekli bilgileri toplar. Bu bilgiler; isim, e-posta adresi veya site kullanım alışkanlıkları gibi verileri içerebilir.
+                        </p>
+                    </div>
+                </div>
+
+                @* Bilgi Kullanımı *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-success"><i class="bi bi-gear-fill me-2"></i>Bilgi Kullanımı</h4>
+                        <p>
+                            Toplanan bilgiler, hizmetlerimizi geliştirmek, kullanıcı deneyimini iyileştirmek ve gerektiğinde kullanıcılarla iletişim kurmak için kullanılır.
+                        </p>
+                    </div>
+                </div>
+
+                @* Bilgi Paylaşımı *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-warning"><i class="bi bi-person-check-fill me-2"></i>Bilgi Paylaşımı</h4>
+                        <p>
+                            Kullanıcı bilgileriniz üçüncü şahıslarla paylaşılmaz. Yasal zorunluluklar veya kullanıcı rızası durumunda istisnalar olabilir.
+                        </p>
+                    </div>
+                </div>
+
+                @* Çerezler *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-danger"><i class="bi bi-emoji-smile me-2"></i>Çerezler (Cookies)</h4>
+                        
+                        <p>
+                            Sitemiz, kullanıcı deneyimini geliştirmek amacıyla çerezler kullanabilir. Bu sayede kişiselleştirilmiş içerik ve daha hızlı bir deneyim sağlanır.
+                        </p>
+                    </div>
+                </div>
+
+                @* Veri Güvenliği *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-primary"><i class="bi bi-shield-fill-check me-2"></i>Veri Güvenliği</h4>
+                        <p>
+                            Kullanıcı bilgilerinin güvenliği bizim için önemlidir. Bu nedenle uygun teknik ve idari önlemler alınmakta ve veriler korunmaktadır.
+                        </p>
+                    </div>
+                </div>
+
+                @* Gizlilik Politikası Değişiklikleri *@
+                <div class="col-md-6">
+                    <div class="p-4 h-100 border rounded-4 shadow-sm bg-light">
+                        <h4 class="fw-bold text-secondary"><i class="bi bi-pencil-square me-2"></i>Gizlilik Politikası Değişiklikleri</h4>
+                        <p>
+                            Gizlilik politikamız zaman zaman güncellenebilir. Değişiklikler web sitemizde yayınlandığı andan itibaren geçerlidir.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-5">
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="btn btn-gradient px-4 py-2 shadow">
+                    <i class="bi bi-arrow-left-circle me-2"></i>
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Buton gradient efekti */
+    .btn-gradient {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+    /* Kart hover efekti */
+    .shadow-sm:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
+        transition: all 0.3s ease;
+    }
+</style>

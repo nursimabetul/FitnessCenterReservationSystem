@@ -12,6 +12,9 @@ namespace FitnessCenterReservationSystem.Data
         }
 
 
+
+
+
 		// --- DbSet Tanımları ---
 		public DbSet<Salon> Salonlar { get; set; }
 		public DbSet<AntrenorCalismaSaati> AntrenorCalismaSaatleri { get; set; }

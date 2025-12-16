@@ -48,8 +48,9 @@ namespace FitnessCenterReservationSystem.Controllers
         // GET: Kampanya/Create
         public IActionResult Create()
         {
-            ViewData["HizmetId"] = new SelectList(_context.Hizmetler, "Id", "Ad");
-            return View();
+			ViewBag.SalonId = new SelectList(_context.Salonlar, "Id", "Ad");
+			ViewBag.HizmetId = new SelectList(_context.Hizmetler, "Id", "Ad");
+			return View();
         }
 
         // POST: Kampanya/Create

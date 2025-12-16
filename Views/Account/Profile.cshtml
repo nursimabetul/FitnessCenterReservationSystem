@@ -1,0 +1,81 @@
+﻿@model FitnessCenterReservationSystem.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<h2>Profilim</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="Profile" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Soyad" class="form-label"></label>
+        <input asp-for="Soyad" class="form-control" />
+        <span asp-validation-for="Soyad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DogumTarihi" class="form-label"></label>
+        <input asp-for="DogumTarihi" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Boy" class="form-label"></label>
+        <input asp-for="Boy" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Kilo" class="form-label"></label>
+        <input asp-for="Kilo" class="form-control" />
+    </div>
+
+    @if (Model.Salonlar != null)
+    {
+        <div class="mb-3">
+            <label asp-for="SalonId" class="form-label"></label>
+            <select asp-for="SalonId" asp-items="Model.Salonlar" class="form-select">
+                <option value="">-- Salon Seçin --</option>
+            </select>
+        </div>
+    }
+
+    @if (Model.UzmanlikAlanlari != null)
+    {
+        <div class="mb-3">
+            <label class="form-label">Uzmanlık Alanları</label>
+            @foreach (var uzm in Model.UzmanlikAlanlari)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox"
+                           name="SecilenUzmanliklar" value="@uzm.Value"
+                           @(Model.SecilenUzmanliklar?.Contains(int.Parse(uzm.Value)) == true ? "checked" : "") />
+                    <label class="form-check-label">@uzm.Text</label>
+                </div>
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
