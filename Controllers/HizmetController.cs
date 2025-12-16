@@ -17,29 +17,40 @@ namespace FitnessCenterReservationSystem.Controllers
 			_context = context;
 		}
 
-		// GET: Hizmet
+		// GET: Listeleme
 		public async Task<IActionResult> Index()
 		{
 			var hizmetler = await _context.Hizmetler
 				.Include(h => h.Salon)
 				.ToListAsync();
-
 			return View(hizmetler);
 		}
 
-		// GET: Hizmet/Create
-		public async Task<IActionResult> Create()
+		// GET: Detay
+		public async Task<IActionResult> Details(int? id)
 		{
-			ViewBag.Salonlar = new SelectList(
-				await _context.Salonlar.ToListAsync(),
-				"Id",
-				"Ad"
-			);
+			if (id == null) return NotFound();
 
-			return View();
+			var hizmet = await _context.Hizmetler
+				.Include(h => h.Salon)
+				.FirstOrDefaultAsync(h => h.Id == id);
+
+			if (hizmet == null) return NotFound();
+
+			return View(hizmet);
 		}
 
-		// POST: Hizmet/Create
+		// GET: Yeni Hizmet
+	 
+		public IActionResult Create()
+		{
+			var salonlar = _context.Salonlar.ToList(); // Boş olsa bile hata vermez
+			ViewBag.Salonlar = new SelectList(salonlar, "Id", "Ad"); // 0 yerine seçili yok
+			return View();
+		}
+ 
+
+		// POST: Yeni Hizmet
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(Hizmet hizmet)
@@ -56,23 +67,19 @@ namespace FitnessCenterReservationSystem.Controllers
 			return View(hizmet);
 		}
 
-		// GET: Hizmet/Edit/5
-		public async Task<IActionResult> Edit(int id)
+		// GET: Düzenle
+		public async Task<IActionResult> Edit(int? id)
 		{
+			if (id == null) return NotFound();
+
 			var hizmet = await _context.Hizmetler.FindAsync(id);
 			if (hizmet == null) return NotFound();
 
-			ViewBag.Salonlar = new SelectList(
-				_context.Salonlar,
-				"Id",
-				"Ad",
-				hizmet.SalonId
-			);
-
+			ViewBag.Salonlar = new SelectList(_context.Salonlar, "Id", "Ad", hizmet.SalonId);
 			return View(hizmet);
 		}
 
-		// POST: Hizmet/Edit/5
+		// POST: Düzenle
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, Hizmet hizmet)
@@ -81,9 +88,17 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			if (ModelState.IsValid)
 			{
-				_context.Update(hizmet);
-				await _context.SaveChangesAsync();
-				TempData["Success"] = "Hizmet güncellendi.";
+				try
+				{
+					_context.Update(hizmet);
+					await _context.SaveChangesAsync();
+					TempData["Success"] = "Hizmet başarıyla güncellendi.";
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!_context.Hizmetler.Any(h => h.Id == id)) return NotFound();
+					else throw;
+				}
 				return RedirectToAction(nameof(Index));
 			}
 
@@ -91,29 +106,33 @@ namespace FitnessCenterReservationSystem.Controllers
 			return View(hizmet);
 		}
 
-		// GET: Hizmet/Delete/5
-		public async Task<IActionResult> Delete(int id)
+		// GET: Sil
+		public async Task<IActionResult> Delete(int? id)
 		{
+			if (id == null) return NotFound();
+
 			var hizmet = await _context.Hizmetler
 				.Include(h => h.Salon)
-				.FirstOrDefaultAsync(h => h.Id  == id);
+				.FirstOrDefaultAsync(h => h.Id == id);
 
 			if (hizmet == null) return NotFound();
 
 			return View(hizmet);
 		}
 
-		// POST: Hizmet/Delete/5
+		// POST: Sil
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var hizmet = await _context.Hizmetler.FindAsync(id);
 			if (hizmet != null)
+			{
 				_context.Hizmetler.Remove(hizmet);
+				await _context.SaveChangesAsync();
+				TempData["Success"] = "Hizmet başarıyla silindi.";
+			}
 
-			await _context.SaveChangesAsync();
-			TempData["Success"] = "Hizmet silindi.";
 			return RedirectToAction(nameof(Index));
 		}
 	}

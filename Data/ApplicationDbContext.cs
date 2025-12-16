@@ -20,7 +20,9 @@ namespace FitnessCenterReservationSystem.Data
 		public DbSet<AntrenorUzmanlik> AntrenorUzmanlikAlanlari { get; set; }
 		public DbSet<UzmanlikAlani> UzmanlikAlanlari { get; set; }
 		public DbSet<Randevu> Randevular { get; set; }
-
+		public DbSet<Kampanya> Kampanyalar { get; set; }
+		public DbSet<Duyuru> Duyurular { get; set; }
+		public DbSet<Haber> Haberler { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -138,6 +140,42 @@ namespace FitnessCenterReservationSystem.Data
 				.WithMany(h => h.Randevular)
 				.HasForeignKey(r => r.HizmetId)
 				.OnDelete(DeleteBehavior.Restrict);
+
+
+			// ------------------------------------------------------------
+			// 11) Kampanya ↔ Salon (Opsiyonel)
+			// ------------------------------------------------------------
+			builder.Entity<Kampanya>()
+				.HasKey(k => k.Id);
+
+			builder.Entity<Kampanya>()
+				.HasOne<Salon>()
+				.WithMany()  
+				.HasForeignKey("SalonId") // Kampanya modeline SalonId eklendi
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// ------------------------------------------------------------
+			// 12) Duyuru (genel, bağımsız)
+			// ------------------------------------------------------------
+			builder.Entity<Duyuru>()
+				.HasKey(d => d.Id);
+
+			// ------------------------------------------------------------
+			// 13) Haber (genel, bağımsız)
+			// ------------------------------------------------------------
+			builder.Entity<Haber>()
+				.HasKey(h => h.Id);
+
+
+
+
+
+
+
+
+
+
+
 		}
 
 

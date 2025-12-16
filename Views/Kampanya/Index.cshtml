@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Hizmet>
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Kampanya>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,16 +14,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Ad)
+                @Html.DisplayNameFor(model => model.Baslik)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SureDakika)
+                @Html.DisplayNameFor(model => model.Aciklama)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ucret)
+                @Html.DisplayNameFor(model => model.BaslangicTarihi)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Salon)
+                @Html.DisplayNameFor(model => model.BitisTarihi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hizmet)
             </th>
             <th></th>
         </tr>
@@ -32,16 +35,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Ad)
+                @Html.DisplayFor(modelItem => item.Baslik)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SureDakika)
+                @Html.DisplayFor(modelItem => item.Aciklama)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Ucret)
+                @Html.DisplayFor(modelItem => item.BaslangicTarihi)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Salon.Ad)
+                @Html.DisplayFor(modelItem => item.BitisTarihi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hizmet.Ad)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
