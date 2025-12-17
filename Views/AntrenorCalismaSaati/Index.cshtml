@@ -1,0 +1,43 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.AntrenorCalismaSaati>
+
+@{
+    ViewData["Title"] = "Çalışma Saatleri";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Yeni Çalışma Saati Ekle</a>
+</p>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Antrenör</th>
+            <th>Gün</th>
+            <th>Başlangıç Saati</th>
+            <th>Bitiş Saati</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Antrenor.Ad @item.Antrenor.Soyad</td>
+                <td>@item.Gun</td>
+                <td>@item.BaslangicSaati</td>
+                <td>@item.BitisSaati</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

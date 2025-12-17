@@ -1,0 +1,55 @@
+﻿@model FitnessCenterReservationSystem.Models.AntrenorCalismaSaati
+
+@{
+    ViewData["Title"] = "Yeni Çalışma Saati Ekle";
+}
+
+<h4 class="mb-3">
+    <i class="bi bi-patch-plus text-primary me-1"></i>
+    @ViewData["Title"]
+</h4>
+
+<div class="card shadow-sm border-0 mx-auto" ;">
+    <div class="card-body p-2">
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Antrenör</label>
+        <select asp-for="AntrenorId" class="form-select" asp-items="@(ViewData["AntrenorId"] as SelectList)"></select>        <span asp-validation-for="AntrenorId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Gün</label>
+        <select asp-for="Gun" class="form-select">
+            @foreach (var gun in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <option value="@gun">@gun</option>
+            }
+        </select>
+        <span asp-validation-for="Gun" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Başlangıç Saati</label>
+        <input asp-for="BaslangicSaati" class="form-control" type="time" />
+        <span asp-validation-for="BaslangicSaati" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Bitiş Saati</label>
+        <input asp-for="BitisSaati" class="form-control" type="time" />
+        <span asp-validation-for="BitisSaati" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

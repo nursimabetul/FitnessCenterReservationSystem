@@ -1,0 +1,31 @@
+﻿@model FitnessCenterReservationSystem.Models.AntrenorCalismaSaati
+
+@{
+    ViewData["Title"] = "Çalışma Saatini Sil";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="alert alert-warning">
+    Aşağıdaki çalışma saatini silmek istediğinizden emin misiniz?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-2">Antrenör</dt>
+    <dd class="col-sm-10">@Model.Antrenor.Ad @Model.Antrenor.Soyad</dd>
+
+    <dt class="col-sm-2">Gün</dt>
+    <dd class="col-sm-10">@Model.Gun</dd>
+
+    <dt class="col-sm-2">Başlangıç Saati</dt>
+    <dd class="col-sm-10">@Model.BaslangicSaati</dd>
+
+    <dt class="col-sm-2">Bitiş Saati</dt>
+    <dd class="col-sm-10">@Model.BitisSaati</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
