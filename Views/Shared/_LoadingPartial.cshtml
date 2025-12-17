@@ -1,0 +1,51 @@
+﻿<style>
+    #page-loader {
+        transition: opacity .25s ease, transform .25s ease;
+        width: 320px;
+    }
+
+    .loader-icon {
+        animation: slide-custom 1.4s ease-in-out infinite;
+    }
+
+    @@keyframes slide-custom {
+        0% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-20px);
+        }
+        /* 1 cm sola */
+        50% {
+            transform: translateX(40px);
+        }
+        /* 2 cm sağa */
+        75% {
+            transform: translateX(-20px);
+        }
+        /* tekrar 1 cm sola */
+        100% {
+            transform: translateX(0);
+        }
+    }
+</style>
+
+
+
+<!-- Blur Arka Plan -->
+<div id="page-blur"
+     class="position-fixed top-0 start-0 w-100 h-100"
+     style="z-index:9998;"></div>
+
+<!-- Loader -->
+<div id="page-loader"
+     class="position-fixed top-50 start-50 translate-middle
+            bg-white shadow rounded-4 p-4
+            d-flex flex-column align-items-center gap-2"
+     style="z-index:9999; width: 320px;">
+
+    <i class="bi bi-activity text-primary fs-1 loader-icon"></i>
+    <small class="text-muted">           Yükleniyor...          </small>
+
+</div>

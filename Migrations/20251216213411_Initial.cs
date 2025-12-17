@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitnessCenterReservationSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class mig1 : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,9 @@ namespace FitnessCenterReservationSystem.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Adres = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    telefon = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AcilisSaati = table.Column<TimeSpan>(type: "time", nullable: false),
                     KapanisSaati = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
@@ -46,7 +48,7 @@ namespace FitnessCenterReservationSystem.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ad = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Ad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,16 +118,16 @@ namespace FitnessCenterReservationSystem.Migrations
                 name: "Hizmetler",
                 columns: table => new
                 {
-                    HizmetId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ad = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SureDakika = table.Column<int>(type: "int", nullable: false),
                     Ucret = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     SalonId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hizmetler", x => x.HizmetId);
+                    table.PrimaryKey("PK_Hizmetler", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Hizmetler_Salonlar_SalonId",
                         column: x => x.SalonId,
@@ -162,7 +164,7 @@ namespace FitnessCenterReservationSystem.Migrations
                 {
                     AntrenorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UzmanlikAlaniId = table.Column<int>(type: "int", nullable: false),
-                    AntrenorUzmanlikAlaniId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     UzmanlikAlaniId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -273,12 +275,66 @@ namespace FitnessCenterReservationSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Duyurular",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Baslik = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Icerik = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tarih = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SalonId = table.Column<int>(type: "int", nullable: true),
+                    OlusturanId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Duyurular", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Duyurular_AspNetUsers_OlusturanId",
+                        column: x => x.OlusturanId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Duyurular_Salonlar_SalonId",
+                        column: x => x.SalonId,
+                        principalTable: "Salonlar",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Haberler",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Baslik = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Icerik = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tarih = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SalonId = table.Column<int>(type: "int", nullable: true),
+                    OlusturanId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Haberler", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Haberler_AspNetUsers_OlusturanId",
+                        column: x => x.OlusturanId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Haberler_Salonlar_SalonId",
+                        column: x => x.SalonId,
+                        principalTable: "Salonlar",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AntrenorHizmetler",
                 columns: table => new
                 {
                     AntrenorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HizmetId = table.Column<int>(type: "int", nullable: false),
-                    AntrenorHizmetId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -293,28 +349,63 @@ namespace FitnessCenterReservationSystem.Migrations
                         name: "FK_AntrenorHizmetler_Hizmetler_HizmetId",
                         column: x => x.HizmetId,
                         principalTable: "Hizmetler",
-                        principalColumn: "HizmetId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Kampanyalar",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Baslik = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Aciklama = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    BaslangicTarihi = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BitisTarihi = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SalonId = table.Column<int>(type: "int", nullable: true),
+                    SalonId1 = table.Column<int>(type: "int", nullable: true),
+                    HizmetId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Kampanyalar", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Kampanyalar_Hizmetler_HizmetId",
+                        column: x => x.HizmetId,
+                        principalTable: "Hizmetler",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Kampanyalar_Salonlar_SalonId",
+                        column: x => x.SalonId,
+                        principalTable: "Salonlar",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Kampanyalar_Salonlar_SalonId1",
+                        column: x => x.SalonId1,
+                        principalTable: "Salonlar",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Randevular",
                 columns: table => new
                 {
-                    RandevuId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Tarih = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BaslangicSaati = table.Column<TimeSpan>(type: "time", nullable: false),
                     BitisSaati = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UyeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AntrenorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UyeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AntrenorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SalonId = table.Column<int>(type: "int", nullable: false),
                     HizmetId = table.Column<int>(type: "int", nullable: false),
                     Durum = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Randevular", x => x.RandevuId);
+                    table.PrimaryKey("PK_Randevular", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Randevular_AspNetUsers_AntrenorId",
                         column: x => x.AntrenorId,
@@ -331,7 +422,7 @@ namespace FitnessCenterReservationSystem.Migrations
                         name: "FK_Randevular_Hizmetler_HizmetId",
                         column: x => x.HizmetId,
                         principalTable: "Hizmetler",
-                        principalColumn: "HizmetId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Randevular_Salonlar_SalonId",
@@ -406,9 +497,44 @@ namespace FitnessCenterReservationSystem.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Duyurular_OlusturanId",
+                table: "Duyurular",
+                column: "OlusturanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Duyurular_SalonId",
+                table: "Duyurular",
+                column: "SalonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Haberler_OlusturanId",
+                table: "Haberler",
+                column: "OlusturanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Haberler_SalonId",
+                table: "Haberler",
+                column: "SalonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Hizmetler_SalonId",
                 table: "Hizmetler",
                 column: "SalonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kampanyalar_HizmetId",
+                table: "Kampanyalar",
+                column: "HizmetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kampanyalar_SalonId",
+                table: "Kampanyalar",
+                column: "SalonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kampanyalar_SalonId1",
+                table: "Kampanyalar",
+                column: "SalonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Randevular_AntrenorId",
@@ -457,6 +583,15 @@ namespace FitnessCenterReservationSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Duyurular");
+
+            migrationBuilder.DropTable(
+                name: "Haberler");
+
+            migrationBuilder.DropTable(
+                name: "Kampanyalar");
 
             migrationBuilder.DropTable(
                 name: "Randevular");

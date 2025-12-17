@@ -1,0 +1,19 @@
+﻿<script>
+    window.addEventListener("load", function () {
+
+        setTimeout(() => {
+            const loader = document.getElementById("page-loader");
+            const blur = document.getElementById("page-blur");
+
+            loader.style.opacity = "0";
+            loader.style.transform = "scale(0.9)";
+            blur.style.opacity = "0";
+
+            setTimeout(() => {
+                loader.remove();
+                blur.remove();
+            }, 250);
+
+        }, 300); // ⏱ 0.3 saniye
+    });
+</script>

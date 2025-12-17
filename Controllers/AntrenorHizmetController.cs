@@ -17,7 +17,9 @@ namespace FitnessCenterReservationSystem.Controllers
 			_context = context;
 		}
 
-		// GET: Liste
+		// =====================================================
+		// GET: Index – Antrenörleri ve verdikleri hizmetleri listele
+		// =====================================================
 		public async Task<IActionResult> Index()
 		{
 			var antrenorRole = await _context.Roles
@@ -36,28 +38,37 @@ namespace FitnessCenterReservationSystem.Controllers
 			return View(antrenorler);
 		}
 
-		// GET: Edit
+		// =====================================================
+		// GET: Edit – Antrenörün hizmetlerini düzenle
+		// =====================================================
 		public async Task<IActionResult> Edit(string id)
 		{
 			if (id == null) return NotFound();
 
 			var antrenor = await _context.Users
 				.Include(u => u.AntrenorHizmetler)
+					.ThenInclude(ah => ah.Hizmet)
+						.ThenInclude(h => h.Salon)
 				.FirstOrDefaultAsync(u => u.Id == id);
 
 			if (antrenor == null) return NotFound();
 
-			var tumHizmetler = await _context.Hizmetler.ToListAsync();
+			var tumHizmetler = await _context.Hizmetler
+				.Include(h => h.Salon)
+				.ToListAsync();
 
 			var model = new AntrenorHizmetViewModel
 			{
 				AntrenorId = antrenor.Id,
-				AdSoyad = antrenor.Ad + " " + antrenor.Soyad,
+				AdSoyad = $"{antrenor.Ad} {antrenor.Soyad}",
 				Email = antrenor.Email,
-				Hizmetler = tumHizmetler.Select(h => new HizmetCheckboxVM
+				TumHizmetler = tumHizmetler.Select(h => new HizmetCheckboxVM
 				{
 					Id = h.Id,
 					Ad = h.Ad,
+					SureDakika = h.SureDakika,
+					Ucret = h.Ucret,
+					SalonAdi = h.Salon.Ad,
 					Secili = antrenor.AntrenorHizmetler
 						.Any(x => x.HizmetId == h.Id)
 				}).ToList()
@@ -66,28 +77,23 @@ namespace FitnessCenterReservationSystem.Controllers
 			return View(model);
 		}
 
-		// POST: Edit
+		// =====================================================
+		// POST: Edit – Seçilen hizmetleri kaydet
+		// =====================================================
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(string id, int[] secilenHizmetler)
+		public async Task<IActionResult> Edit(string antrenorId, int[] secilenHizmetler)
 		{
-			var antrenor = await _context.Users
-				.Include(u => u.AntrenorHizmetler)
-				.FirstOrDefaultAsync(u => u.Id == id);
-
-			if (antrenor == null) return NotFound();
-
-			// Mevcut ilişkileri sil
 			var mevcutlar = _context.AntrenorHizmetler
-				.Where(x => x.AntrenorId == id);
+				.Where(x => x.AntrenorId == antrenorId);
+
 			_context.AntrenorHizmetler.RemoveRange(mevcutlar);
 
-			// Yeni seçilenleri ekle
 			foreach (var hizmetId in secilenHizmetler)
 			{
 				_context.AntrenorHizmetler.Add(new AntrenorHizmet
 				{
-					AntrenorId = id,
+					AntrenorId = antrenorId,
 					HizmetId = hizmetId
 				});
 			}

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessCenterReservationSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251216035855_modelDuzenleme")]
-    partial class modelDuzenleme
+    [Migration("20251216213411_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,6 +182,76 @@ namespace FitnessCenterReservationSystem.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Duyuru", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Baslik")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Icerik")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OlusturanId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("SalonId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Tarih")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OlusturanId");
+
+                    b.HasIndex("SalonId");
+
+                    b.ToTable("Duyurular");
+                });
+
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Haber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Baslik")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Icerik")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OlusturanId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("SalonId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Tarih")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OlusturanId");
+
+                    b.HasIndex("SalonId");
+
+                    b.ToTable("Haberler");
+                });
+
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.Hizmet", b =>
                 {
                     b.Property<int>("Id")
@@ -210,6 +280,50 @@ namespace FitnessCenterReservationSystem.Migrations
                     b.HasIndex("SalonId");
 
                     b.ToTable("Hizmetler");
+                });
+
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Kampanya", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Aciklama")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("BaslangicTarihi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Baslik")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("BitisTarihi")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("HizmetId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalonId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SalonId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HizmetId");
+
+                    b.HasIndex("SalonId");
+
+                    b.HasIndex("SalonId1");
+
+                    b.ToTable("Kampanyalar");
                 });
 
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.Randevu", b =>
@@ -506,6 +620,36 @@ namespace FitnessCenterReservationSystem.Migrations
                     b.Navigation("Salon");
                 });
 
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Duyuru", b =>
+                {
+                    b.HasOne("FitnessCenterReservationSystem.Models.ApplicationUser", "Olusturan")
+                        .WithMany()
+                        .HasForeignKey("OlusturanId");
+
+                    b.HasOne("FitnessCenterReservationSystem.Models.Salon", "Salon")
+                        .WithMany()
+                        .HasForeignKey("SalonId");
+
+                    b.Navigation("Olusturan");
+
+                    b.Navigation("Salon");
+                });
+
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Haber", b =>
+                {
+                    b.HasOne("FitnessCenterReservationSystem.Models.ApplicationUser", "Olusturan")
+                        .WithMany()
+                        .HasForeignKey("OlusturanId");
+
+                    b.HasOne("FitnessCenterReservationSystem.Models.Salon", "Salon")
+                        .WithMany()
+                        .HasForeignKey("SalonId");
+
+                    b.Navigation("Olusturan");
+
+                    b.Navigation("Salon");
+                });
+
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.Hizmet", b =>
                 {
                     b.HasOne("FitnessCenterReservationSystem.Models.Salon", "Salon")
@@ -513,6 +657,26 @@ namespace FitnessCenterReservationSystem.Migrations
                         .HasForeignKey("SalonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Salon");
+                });
+
+            modelBuilder.Entity("FitnessCenterReservationSystem.Models.Kampanya", b =>
+                {
+                    b.HasOne("FitnessCenterReservationSystem.Models.Hizmet", "Hizmet")
+                        .WithMany()
+                        .HasForeignKey("HizmetId");
+
+                    b.HasOne("FitnessCenterReservationSystem.Models.Salon", null)
+                        .WithMany()
+                        .HasForeignKey("SalonId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FitnessCenterReservationSystem.Models.Salon", "Salon")
+                        .WithMany("Kampanyalar")
+                        .HasForeignKey("SalonId1");
+
+                    b.Navigation("Hizmet");
 
                     b.Navigation("Salon");
                 });
@@ -626,6 +790,8 @@ namespace FitnessCenterReservationSystem.Migrations
             modelBuilder.Entity("FitnessCenterReservationSystem.Models.Salon", b =>
                 {
                     b.Navigation("Hizmetler");
+
+                    b.Navigation("Kampanyalar");
 
                     b.Navigation("Randevular");
                 });

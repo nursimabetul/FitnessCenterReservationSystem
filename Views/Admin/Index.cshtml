@@ -2,6 +2,8 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
+@await Html.PartialAsync("_LoadingPartial")
+
 <h2 class="mb-4">
     <i class="bi bi-speedometer2 me-2"></i>
     Admin Dashboard
@@ -96,3 +98,4 @@
         </div>
     </div>
 </div>
+@await Html.PartialAsync("_LoadingScriptsPartial")

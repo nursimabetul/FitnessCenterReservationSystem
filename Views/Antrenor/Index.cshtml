@@ -2,6 +2,8 @@
     ViewData["Title"] = "Antrenör Dashboard";
 }
 
+@await Html.PartialAsync("_LoadingPartial")
+
 <h1 class="mb-4">Hoşgeldiniz, @User.Identity.Name!</h1>
 
 <div class="row g-4">
@@ -86,3 +88,4 @@
         <div class="alert alert-info">Yaklaşan randevu bulunmamaktadır.</div>
     }
 </div>
+@await Html.PartialAsync("_LoadingScriptsPartial")
