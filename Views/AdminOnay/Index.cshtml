@@ -1,0 +1,56 @@
+﻿@model IEnumerable<dynamic>  
+@{
+    ViewData["Title"] = "Kullanıcı Onay";
+}
+
+<h2>Kullanıcı Onay Bekleyenler</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Onay bekleyen kullanıcı yok.</div>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Ad Soyad</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.User.Ad @item.User.Soyad</td>
+                    <td>@item.User.Email</td>
+                    <td>@item.Role</td>
+                    <td>
+                        <form asp-action="KullaniciOnayla" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@item.User.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Onayla</button>
+                        </form>
+                        <form asp-action="KullaniciReddet" method="post" style="display:inline">
+                            <input type="hidden" name="id" value="@item.User.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Reddet</button>
+                      
+
+
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mt-2">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mt-2">@TempData["Error"]</div>
+}
