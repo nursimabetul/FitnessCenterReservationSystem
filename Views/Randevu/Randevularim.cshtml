@@ -1,0 +1,35 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Randevu>
+
+<h1 class="mb-4">Randevularım</h1>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Antrenör</th>
+            <th>Hizmet</th>
+            <th>Ücret</th>
+            <th>Salon</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Antrenor?.Ad </td>
+                <td>@r.Hizmet?.Ad </td>
+                <td>@r.Hizmet.Ucret</td>
+                <td>@r.Salon?.Ad </td>
+                <td>@r.Tarih.ToString("dd.MM.yyyy")</td>
+                <td>@r.BaslangicSaati.ToString(@"hh\:mm") - @r.BitisSaati.ToString(@"hh\:mm")</td>
+                <td>@((RandevuDurum)r.Durum)</td>
+                <td>
+                    <a class="btn btn-sm btn-danger" asp-action="Cancel" asp-route-id="@r.Id">İptal Et</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

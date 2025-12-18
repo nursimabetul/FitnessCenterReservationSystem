@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 // HttpClient servisi 
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<YapayZekaServisi>(); // ? Bunu ekle
 
 // Identity  tanýmlanmasý
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

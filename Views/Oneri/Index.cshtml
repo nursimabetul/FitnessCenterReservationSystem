@@ -1,0 +1,58 @@
+﻿@model FitnessCenterReservationSystem.ViewModels.KullaniciBilgiViewModel
+@await Html.PartialAsync("_LoadingPartial")
+
+<h2>Haftalık Egzersiz ve Beslenme Önerisi</h2>
+
+<form asp-action="Index" method="post">
+    <div class="mb-3">
+        <label asp-for="Boy" class="form-label"></label>
+        <input asp-for="Boy" class="form-control" />
+        <span asp-validation-for="Boy" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Kilo" class="form-label"></label>
+        <input asp-for="Kilo" class="form-control" />
+        <span asp-validation-for="Kilo" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DogumTarihi" class="form-label"></label>
+        <input asp-for="DogumTarihi" class="form-control" type="date" />
+        <span asp-validation-for="DogumTarihi" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Hedef" class="form-label"></label>
+        <select asp-for="Hedef" class="form-select">
+            <option value="">Seçiniz</option>
+            <option value="Kilo Verme">Kilo Verme</option>
+            <option value="Kas Geliştirme">Kas Geliştirme</option>
+            <option value="Genel Sağlık">Genel Sağlık</option>
+        </select>
+        <span asp-validation-for="Hedef" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Öneri Al</button>
+</form>
+
+@if (ViewBag.Oneri != null)
+{
+    <div class="alert alert-success mt-3">
+        <h5>AI Önerisi:</h5>
+        <pre>@ViewBag.Oneri</pre>
+    </div>
+}
+
+@if (ViewBag.Hata != null)
+{
+    <div class="alert alert-danger mt-3">
+        <strong>Hata:</strong> @ViewBag.Hata
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+@await Html.PartialAsync("_LoadingScriptsPartial")

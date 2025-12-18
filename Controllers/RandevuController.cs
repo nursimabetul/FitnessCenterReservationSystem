@@ -18,6 +18,78 @@ namespace FitnessCenterReservationSystem.Controllers
 			_context = context;
 		}
 
+
+		[HttpGet]
+		public async Task<JsonResult> GetHizmetlerBySalon(int id)
+		{
+			var hizmetler = await _context.Hizmetler
+				.Where(h => h.SalonId == id)
+				.Select(h => new { value = h.Id, text = h.Ad, sure = h.SureDakika})
+				.ToListAsync();
+
+			return Json(hizmetler);
+		}
+		[HttpGet]
+		public async Task<JsonResult> GetAntrenorlerByHizmet(int id)
+		{
+			var antrenorler = await _context.AntrenorHizmetler
+				.Where(ah => ah.HizmetId == id)
+				.Select(ah => new { value = ah.AntrenorId, text = ah.Antrenor.Ad + " " + ah.Antrenor.Soyad })
+				.ToListAsync();
+
+			return Json(antrenorler);
+		}
+
+
+
+
+
+
+		[HttpGet]
+
+		public async Task<JsonResult> GetMusaitSaatler(string antrenorId, string tarih)
+		{
+			// Tarihi parse et
+			if (!DateTime.TryParse(tarih, out DateTime dt))
+				return Json(new List<string>());
+
+			// 1️⃣ Antrenörün o gün çalışma saatlerini al
+			var calismaSaati = await _context.AntrenorCalismaSaatleri
+				.Where(cs => cs.AntrenorId == antrenorId && cs.Gun == dt.DayOfWeek)
+				.FirstOrDefaultAsync();
+
+			if (calismaSaati == null)
+				return Json(new List<string>()); // Çalışma saati yoksa boş dön
+
+			// 2️⃣ Antrenörün o günki mevcut randevularını al
+			var randevular = await _context.Randevular
+				.Where(r => r.AntrenorId == antrenorId &&
+							r.Tarih == dt &&
+							r.Durum != RandevuDurum.Iptal)
+				.ToListAsync();
+
+			// 3️⃣ Saat aralıklarını 30 dk bloklarla oluştur
+			var saatler = new List<string>();
+			var baslangic = calismaSaati.BaslangicSaati;
+			while (baslangic < calismaSaati.BitisSaati)
+			{
+				var bitis = baslangic.Add(TimeSpan.FromMinutes(30));
+
+				// Çakışma kontrolü
+				bool cakisma = randevular.Any(r =>
+					r.BaslangicSaati < bitis && baslangic < r.BitisSaati);
+
+				if (!cakisma)
+					saatler.Add($"{baslangic:hh\\:mm}"); // Sadece başlangıç saati
+
+				baslangic = baslangic.Add(TimeSpan.FromMinutes(30));
+			}
+
+			return Json(saatler);
+		}
+
+
+
 		// =====================================================
 		// 👤 ÜYE
 		// =====================================================
@@ -29,27 +101,15 @@ namespace FitnessCenterReservationSystem.Controllers
 			{
 				Antrenorler = await _context.Users
 					.Where(u => u.AntrenorHizmetler.Any())
-					.Select(u => new SelectListItem
-					{
-						Value = u.Id,
-						Text = u.Ad + " " + u.Soyad
-					})
+					.Select(u => new SelectListItem { Value = u.Id, Text = u.Ad + " " + u.Soyad })
 					.ToListAsync(),
 
 				Hizmetler = await _context.Hizmetler
-					.Select(h => new SelectListItem
-					{
-						Value = h.Id.ToString(),
-						Text = h.Ad
-					})
+					.Select(h => new SelectListItem { Value = h.Id.ToString(), Text = h.Ad })
 					.ToListAsync(),
 
 				Salonlar = await _context.Salonlar
-					.Select(s => new SelectListItem
-					{
-						Value = s.Id.ToString(),
-						Text = s.Ad
-					})
+					.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Ad })
 					.ToListAsync()
 			};
 
@@ -59,92 +119,84 @@ namespace FitnessCenterReservationSystem.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[Authorize(Roles = "Üye")]
+
+		[HttpPost]
+		[Authorize(Roles = "Üye")]
 		public async Task<IActionResult> Create(RandevuViewModel model)
 		{
-			if (!ModelState.IsValid)
-				return View(model);
+			// Dropdownları her zaman doldur
+			model.Salonlar = await _context.Salonlar
+				.Select(s => new SelectListItem
+				{
+					Value = s.Id.ToString(),
+					Text = s.Ad,
+					Selected = s.Id == model.SalonId
+				})
+				.ToListAsync();
+
+			model.Hizmetler = model.SalonId > 0
+				? await _context.Hizmetler
+					.Where(h => h.SalonId == model.SalonId)
+					.Select(h => new SelectListItem
+					{
+						Value = h.Id.ToString(),
+						Text = h.Ad,
+						Selected = h.Id == model.HizmetId
+					})
+					.ToListAsync()
+				: new List<SelectListItem>();
+
+			model.Antrenorler = model.HizmetId > 0
+				? await _context.AntrenorHizmetler
+					.Where(ah => ah.HizmetId == model.HizmetId)
+					.Select(ah => new SelectListItem
+					{
+						Value = ah.AntrenorId,
+						Text = ah.Antrenor.Ad + " " + ah.Antrenor.Soyad,
+						Selected = ah.AntrenorId == model.AntrenorId
+					})
+					.ToListAsync()
+				: new List<SelectListItem>();
+
+			var errors = new List<string>();
+
+			// ✅ Validasyonlar
+			if (model.Tarih.Date < DateTime.Today)
+				errors.Add("Geçmiş tarih için randevu alınamaz.");
+
+			if (!await _context.Hizmetler.AnyAsync(h => h.Id == model.HizmetId && h.SalonId == model.SalonId))
+				errors.Add("Seçilen salon bu hizmeti sunmamaktadır.");
+
+			if (!await _context.AntrenorHizmetler.AnyAsync(x => x.AntrenorId == model.AntrenorId && x.HizmetId == model.HizmetId))
+				errors.Add("Antrenör bu hizmeti verememektedir.");
+
+			var salon = await _context.Salonlar.FindAsync(model.SalonId);
+			if (salon == null)
+				errors.Add("Seçilen salon bulunamadı.");
+			else if (model.BaslangicSaati < salon.AcilisSaati || model.BitisSaati > salon.KapanisSaati)
+				errors.Add($"Salon {salon.AcilisSaati:hh\\:mm} - {salon.KapanisSaati:hh\\:mm} saatleri arasında hizmet vermektedir.");
+
+			if (!await _context.AntrenorCalismaSaatleri.AnyAsync(cs =>
+				cs.AntrenorId == model.AntrenorId &&
+				cs.Gun == model.Tarih.DayOfWeek &&
+				model.BaslangicSaati >= cs.BaslangicSaati &&
+				model.BitisSaati <= cs.BitisSaati))
+				errors.Add("Antrenör bu saatlerde çalışmamaktadır.");
+
+			if (await _context.Randevular.AnyAsync(r =>
+				r.AntrenorId == model.AntrenorId &&
+				r.Tarih == model.Tarih &&
+				r.Durum != RandevuDurum.Iptal &&
+				(r.BaslangicSaati < model.BitisSaati && model.BaslangicSaati < r.BitisSaati)))
+				errors.Add("Bu saat aralığında antrenörün başka bir randevusu bulunmaktadır.");
+
+			if (errors.Any())
+				return Json(new { success = false, errors });
 
 			var uyeId = await _context.Users
 				.Where(u => u.UserName == User.Identity!.Name)
 				.Select(u => u.Id)
 				.FirstAsync();
-
-			// 1️⃣ Geçmiş tarih kontrolü
-			if (model.Tarih.Date < DateTime.Today)
-			{
-				ModelState.AddModelError("", "Geçmiş tarih için randevu alınamaz.");
-				return View(model);
-			}
-
-			// 2️⃣ Salon bu hizmeti veriyor mu?
-			bool salonHizmetiVarMi = await _context.Hizmetler
-				.AnyAsync(h => h.Id == model.HizmetId && h.SalonId == model.SalonId);
-
-			if (!salonHizmetiVarMi)
-			{
-				ModelState.AddModelError("", "Seçilen salon bu hizmeti sunmamaktadır.");
-				return View(model);
-			}
-
-			// 3️⃣ Antrenör bu hizmeti veriyor mu?
-			bool antrenorHizmetiVarMi = await _context.AntrenorHizmetler
-				.AnyAsync(x =>
-					x.AntrenorId == model.AntrenorId &&
-					x.HizmetId == model.HizmetId);
-
-			if (!antrenorHizmetiVarMi)
-			{
-				ModelState.AddModelError("", "Antrenör bu hizmeti verememektedir.");
-				return View(model);
-			}
-
-			// 4️⃣ Salon çalışma saatleri
-			var salon = await _context.Salonlar.FindAsync(model.SalonId);
-
-			if (salon == null)
-			{
-				ModelState.AddModelError("", "Salon bulunamadı.");
-				return View(model);
-			}
-
-			if (model.BaslangicSaati < salon.AcilisSaati ||
-				model.BitisSaati > salon.KapanisSaati)
-			{
-				ModelState.AddModelError("", "Salon bu saatlerde hizmet vermemektedir.");
-				return View(model);
-			}
-
-
-			// 5️⃣ Antrenör çalışma saatleri
-			bool antrenorMusaitMi = await _context.AntrenorCalismaSaatleri.AnyAsync(cs =>
-				cs.AntrenorId == model.AntrenorId &&
-				cs.Gun == model.Tarih.DayOfWeek &&
-				model.BaslangicSaati >= cs.BaslangicSaati &&
-				model.BitisSaati <= cs.BitisSaati
-			);
-
-			if (!antrenorMusaitMi)
-			{
-				ModelState.AddModelError("", "Antrenör bu saatlerde çalışmamaktadır.");
-				return View(model);
-			}
-
-			// 6️⃣ Çakışma kontrolü
-			bool cakismaVarMi = await _context.Randevular.AnyAsync(r =>
-				r.AntrenorId == model.AntrenorId &&
-				r.Tarih == model.Tarih &&
-				r.Durum != RandevuDurum.Iptal &&
-				(
-					r.BaslangicSaati < model.BitisSaati &&
-					model.BaslangicSaati < r.BitisSaati
-				)
-			);
-
-			if (cakismaVarMi)
-			{
-				ModelState.AddModelError("", "Bu saat aralığında başka bir randevu bulunmaktadır.");
-				return View(model);
-			}
 
 			var randevu = new Randevu
 			{
@@ -161,28 +213,35 @@ namespace FitnessCenterReservationSystem.Controllers
 			_context.Randevular.Add(randevu);
 			await _context.SaveChangesAsync();
 
-			TempData["Success"] = "Randevu talebiniz oluşturuldu.";
-			return RedirectToAction(nameof(MyRandevular));
+			return Json(new { success = true, message = "Randevu talebiniz oluşturuldu." });
 		}
 
+
+
+
+
+
 		[Authorize(Roles = "Üye")]
-		public async Task<IActionResult> MyRandevular()
+		public async Task<IActionResult> Randevularim()
 		{
+			// Giriş yapan üyenin Id'sini al
 			var uyeId = await _context.Users
 				.Where(u => u.UserName == User.Identity!.Name)
 				.Select(u => u.Id)
 				.FirstAsync();
 
+			// Sadece bu üyenin randevularını al, tüm navigation property'leri Include et
 			var list = await _context.Randevular
+				.Where(r => r.UyeId == uyeId)
 				.Include(r => r.Antrenor)
 				.Include(r => r.Hizmet)
 				.Include(r => r.Salon)
-				.Where(r => r.UyeId == uyeId)
 				.OrderByDescending(r => r.Tarih)
 				.ToListAsync();
 
 			return View(list);
 		}
+
 
 		[Authorize(Roles = "Üye")]
 		public async Task<IActionResult> Cancel(int id)
@@ -200,7 +259,7 @@ namespace FitnessCenterReservationSystem.Controllers
 			randevu.Durum = RandevuDurum.Iptal;
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction(nameof(MyRandevular));
+			return RedirectToAction(nameof(Randevularim));
 		}
 
 		// =====================================================
@@ -216,11 +275,10 @@ namespace FitnessCenterReservationSystem.Controllers
 				.FirstAsync();
 
 			var list = await _context.Randevular
+				.Where(r => r.AntrenorId == antrenorId && r.Durum == RandevuDurum.Beklemede)
 				.Include(r => r.Uye)
 				.Include(r => r.Hizmet)
-				.Where(r =>
-					r.AntrenorId == antrenorId &&
-					r.Durum == RandevuDurum.Beklemede)
+				.Include(r => r.Salon)
 				.ToListAsync();
 
 			return View(list);
@@ -229,10 +287,10 @@ namespace FitnessCenterReservationSystem.Controllers
 		[Authorize(Roles = "Antrenör")]
 		public async Task<IActionResult> Approve(int id)
 		{
-			var randevu = await _context.Randevular.FindAsync(id);
-			if (randevu == null) return NotFound();
+			var r = await _context.Randevular.FindAsync(id);
+			if (r == null) return NotFound();
 
-			randevu.Durum = RandevuDurum.Onaylandi;
+			r.Durum = RandevuDurum.Onaylandi;
 			await _context.SaveChangesAsync();
 
 			return RedirectToAction(nameof(PendingRandevular));
@@ -241,10 +299,10 @@ namespace FitnessCenterReservationSystem.Controllers
 		[Authorize(Roles = "Antrenör")]
 		public async Task<IActionResult> Reject(int id)
 		{
-			var randevu = await _context.Randevular.FindAsync(id);
-			if (randevu == null) return NotFound();
+			var r = await _context.Randevular.FindAsync(id);
+			if (r == null) return NotFound();
 
-			randevu.Durum = RandevuDurum.Reddedildi;
+			r.Durum = RandevuDurum.Reddedildi;
 			await _context.SaveChangesAsync();
 
 			return RedirectToAction(nameof(PendingRandevular));

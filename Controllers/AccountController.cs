@@ -266,13 +266,13 @@ namespace FitnessCenterReservationSystem.Controllers
 			{
 				user.SalonId = model.SalonId;
 
-				// Uzmanlık alanlarını güncelle
+				// Mevcut uzmanlık alanlarını temizle
 				var mevcut = _context.AntrenorUzmanlikAlanlari
 					.Where(a => a.AntrenorId == user.Id)
 					.ToList();
-
 				_context.AntrenorUzmanlikAlanlari.RemoveRange(mevcut);
 
+				// Seçilen uzmanlık alanlarını ekle
 				if (model.SecilenUzmanliklar != null && model.SecilenUzmanliklar.Any())
 				{
 					foreach (var uzmId in model.SecilenUzmanliklar)
@@ -286,11 +286,17 @@ namespace FitnessCenterReservationSystem.Controllers
 				}
 			}
 
-			// Önce EF Core tablosunu kaydet (uzmanlık alanları)
-			await _context.SaveChangesAsync();
+			// Önce Identity alanlarını kaydet
+			var identityResult = await _userManager.UpdateAsync(user);
+			if (!identityResult.Succeeded)
+			{
+				foreach (var err in identityResult.Errors)
+					ModelState.AddModelError("", err.Description);
+				return View(model);
+			}
 
-			// Identity alanlarını kaydet
-			await _userManager.UpdateAsync(user);
+			// Sonra EF Core ilişkilerini kaydet
+			await _context.SaveChangesAsync();
 
 			TempData["Success"] = "Profiliniz güncellendi.";
 			return RedirectToAction("Profile");

@@ -7,6 +7,7 @@ namespace FitnessCenterReservationSystem.ViewModels
 {
 	public class RandevuViewModel
 	{
+	
 		public int Id { get; set; }
 
 		public string UyeId { get; set; }
@@ -26,6 +27,8 @@ namespace FitnessCenterReservationSystem.ViewModels
 		public IEnumerable<SelectListItem> Hizmetler { get; set; }
 		public IEnumerable<SelectListItem> Salonlar { get; set; }
 	}
+
+
 
 	 
 }

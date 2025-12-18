@@ -1,47 +1,133 @@
 ﻿@model FitnessCenterReservationSystem.ViewModels.RandevuViewModel
+
 @{
     ViewData["Title"] = "Randevu Oluştur";
 }
 
-<h1>Yeni Randevu Oluştur</h1>
+<h2>Randevu Oluştur</h2>
 
-<form asp-action="Create" method="post">
+<div id="message"></div>
+
+<form id="randevuForm" method="post">
     <div class="mb-3">
-        <label>Üye</label>
-        <select asp-for="UyeId" asp-items="Model.Uyeler" class="form-select"></select>
-    </div>
-    <div class="mb-3">
-        <label>Antrenör</label>
-        <select asp-for="AntrenorId" asp-items="Model.Antrenorler" class="form-select"></select>
-    </div>
-    <div class="mb-3">
-        <label>Hizmet</label>
-        <select asp-for="HizmetId" asp-items="Model.Hizmetler" class="form-select"></select>
-    </div>
-    <div class="mb-3">
-        <label>Salon</label>
-        <select asp-for="SalonId" asp-items="Model.Salonlar" class="form-select"></select>
-    </div>
-    <div class="mb-3">
-        <label>Tarih</label>
-        <input asp-for="Tarih" type="date" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Başlangıç Saati</label>
-        <input asp-for="BaslangicSaati" type="time" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Bitiş Saati</label>
-        <input asp-for="BitisSaati" type="time" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Durum</label>
-        <select asp-for="Durum" class="form-select">
-            <option value="Beklemede">Beklemede</option>
-            <option value="Onaylandi">Onaylandı</option>
-            <option value="Iptal">İptal</option>
+        <label for="SalonId" class="form-label">Salon</label>
+        <select asp-for="SalonId" asp-items="Model.Salonlar" class="form-select" id="SalonId">
+            <option value="">-- Salon Seç --</option>
         </select>
     </div>
-    <button type="submit" class="btn btn-success">Kaydet</button>
-    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+
+    <div class="mb-3">
+        <label for="HizmetId" class="form-label">Hizmet</label>
+        <select asp-for="HizmetId" asp-items="Model.Hizmetler" class="form-select" id="HizmetId" disabled>
+            <option value="">-- Hizmet Seç --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="AntrenorId" class="form-label">Antrenör</label>
+        <select asp-for="AntrenorId" asp-items="Model.Antrenorler" class="form-select" id="AntrenorId" disabled>
+            <option value="">-- Antrenör Seç --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="Tarih" class="form-label">Tarih</label>
+        <input asp-for="Tarih" class="form-control" type="date" id="Tarih"
+               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="mb-3">
+        <label for="BaslangicSaati" class="form-label">Başlangıç Saati</label>
+        <select asp-for="BaslangicSaati" class="form-select" id="BaslangicSaati" disabled>
+            <option value="">-- Saat Seç --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="BitisSaati" class="form-label">Bitiş Saati</label>
+        <input asp-for="BitisSaati" class="form-control" readonly id="BitisSaati" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Randevu Oluştur</button>
 </form>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(function() {
+
+            function loadHizmetler(selected, cb){
+                var salonId = $('#SalonId').val(); if(!salonId) return;
+                $.getJSON('/Randevu/GetHizmetlerBySalon', {id: salonId}, function(data){
+                    var opt = '<option value="">-- Hizmet Seç --</option>';
+                    $.each(data,function(i,h){
+                        opt+=`<option value="${h.value}" data-sure="${h.sure}" ${h.value==selected?'selected':''}>${h.text}</option>`;
+                    });
+                    $('#HizmetId').html(opt).prop('disabled',false); if(cb) cb();
+                });
+            }
+
+            function loadAntrenorler(selected, cb){
+                var hid = $('#HizmetId').val(); if(!hid) return;
+                $.getJSON('/Randevu/GetAntrenorlerByHizmet',{id:hid},function(data){
+                    var opt = '<option value="">-- Antrenör Seç --</option>';
+                    $.each(data,function(i,a){ opt+=`<option value="${a.value}" ${a.value==selected?'selected':''}>${a.text}</option>`; });
+                    $('#AntrenorId').html(opt).prop('disabled',false); if(cb) cb();
+                });
+            }
+
+            function loadSaatler(cb){
+                var aid = $('#AntrenorId').val(); var tarih = $('#Tarih').val();
+                if(!aid || !tarih) return;
+                $.getJSON('/Randevu/GetMusaitSaatler',{antrenorId:aid,tarih:tarih},function(data){
+                    var opt = '<option value="">-- Saat Seç --</option>';
+                    $.each(data,function(i,s){ opt+=`<option value="${s}">${s}</option>`; });
+                    $('#BaslangicSaati').html(opt).prop('disabled',false); if(cb) cb();
+                });
+            }
+
+            function updateBitisSaati(){
+                var bas = $('#BaslangicSaati').val();
+                var sure = parseInt($('#HizmetId option:selected').data('sure'))||0;
+                if(!bas || !sure){$('#BitisSaati').val('');return;}
+                var p = bas.split(':'); var toplam = parseInt(p[0])*60+parseInt(p[1])+sure;
+                $('#BitisSaati').val(`${Math.floor(toplam/60)%24}:${toplam%60}`.padStart(5,'0'));
+            }
+
+            $('#SalonId').change(function(){
+                $('#HizmetId,#AntrenorId,#BaslangicSaati').prop('disabled',true).html('<option>-- Seç --</option>');
+                $('#BitisSaati').val(''); loadHizmetler();
+            });
+            $('#HizmetId').change(function(){
+                $('#AntrenorId,#BaslangicSaati').prop('disabled',true).html('<option>-- Seç --</option>');
+                $('#BitisSaati').val(''); loadAntrenorler();
+            });
+            $('#AntrenorId,#Tarih,#HizmetId').change(function(){ loadSaatler(updateBitisSaati); });
+            $('#BaslangicSaati,#HizmetId').change(updateBitisSaati);
+
+            $('#randevuForm').submit(function(e){
+                e.preventDefault();
+                $('#BaslangicSaati,#BitisSaati').prop('disabled',false);
+
+                $.ajax({
+                    type:'POST',
+                    url:'/Randevu/Create',
+                    data:$(this).serialize(),
+                    success:function(res){
+                        if(res.success){
+                            $('#message').html(`<div class="alert alert-success">${res.message}</div>`);
+                            $('#randevuForm')[0].reset();
+                            $('#HizmetId,#AntrenorId,#BaslangicSaati').prop('disabled',true).html('<option>-- Seç --</option>');
+                            $('#BitisSaati').val('');
+                        }else if(res.errors){
+                            var html = '<div class="alert alert-danger"><ul>';
+                            $.each(res.errors,function(i,e){ html+=`<li>${e}</li>`; });
+                            html+='</ul></div>'; $('#message').html(html);
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+}
