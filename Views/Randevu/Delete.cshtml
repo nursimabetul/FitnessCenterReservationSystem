@@ -1,0 +1,25 @@
+﻿@model FitnessCenterReservationSystem.Models.Randevu
+@{
+    ViewData["Title"] = "Randevu Sil";
+}
+
+<h1>Randevu Sil</h1>
+
+<div class="alert alert-warning">
+    <p>Bu randevuyu silmek istediğinize emin misiniz?</p>
+</div>
+
+<table class="table">
+    <tr><th>Üye</th><td>@Model.Uye.UserName</td></tr>
+    <tr><th>Antrenör</th><td>@Model.Antrenor.UserName</td></tr>
+    <tr><th>Hizmet</th><td>@Model.Hizmet.Ad</td></tr>
+    <tr><th>Salon</th><td>@Model.Salon.Ad</td></tr>
+    <tr><th>Tarih</th><td>@Model.Tarih.ToString("dd.MM.yyyy")</td></tr>
+    <tr><th>Saat</th><td>@Model.BaslangicSaati.ToString(@"hh\:mm") - @Model.BitisSaati.ToString(@"hh\:mm")</td></tr>
+</table>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

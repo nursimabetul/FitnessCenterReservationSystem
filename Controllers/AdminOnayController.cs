@@ -48,6 +48,8 @@ namespace FitnessCenterReservationSystem.Controllers
 			if (user == null) return NotFound();
 
 			user.Onaylandi = true;
+			user.EmailConfirmed = true; // mail onayını burada set ediyoruz
+
 			_context.Update(user);
 			await _context.SaveChangesAsync();
 

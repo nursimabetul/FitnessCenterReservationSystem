@@ -1,0 +1,47 @@
+﻿@model FitnessCenterReservationSystem.ViewModels.RandevuViewModel
+@{
+    ViewData["Title"] = "Randevu Oluştur";
+}
+
+<h1>Yeni Randevu Oluştur</h1>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Üye</label>
+        <select asp-for="UyeId" asp-items="Model.Uyeler" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label>Antrenör</label>
+        <select asp-for="AntrenorId" asp-items="Model.Antrenorler" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label>Hizmet</label>
+        <select asp-for="HizmetId" asp-items="Model.Hizmetler" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label>Salon</label>
+        <select asp-for="SalonId" asp-items="Model.Salonlar" class="form-select"></select>
+    </div>
+    <div class="mb-3">
+        <label>Tarih</label>
+        <input asp-for="Tarih" type="date" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Başlangıç Saati</label>
+        <input asp-for="BaslangicSaati" type="time" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Bitiş Saati</label>
+        <input asp-for="BitisSaati" type="time" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Durum</label>
+        <select asp-for="Durum" class="form-select">
+            <option value="Beklemede">Beklemede</option>
+            <option value="Onaylandi">Onaylandı</option>
+            <option value="Iptal">İptal</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

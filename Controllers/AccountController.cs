@@ -202,8 +202,6 @@ namespace FitnessCenterReservationSystem.Controllers
 			return View();
 		}
 
-
-		[HttpGet]
 		public async Task<IActionResult> Profile()
 		{
 			var user = await _userManager.GetUserAsync(User);
@@ -226,14 +224,12 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			if (isAntrenor)
 			{
-				// Salon listesi
 				model.Salonlar = _context.Salonlar
 					.Select(s => new SelectListItem { Text = s.Ad, Value = s.Id.ToString() })
 					.ToList();
 
 				model.SalonId = user.SalonId;
 
-				// Uzmanlık alanları
 				model.UzmanlikAlanlari = _context.UzmanlikAlanlari
 					.Select(u => new SelectListItem { Text = u.Ad, Value = u.Id.ToString() })
 					.ToList();
@@ -258,23 +254,26 @@ namespace FitnessCenterReservationSystem.Controllers
 			if (user == null)
 				return RedirectToAction("Login");
 
+			// Identity alanlarını güncelle
 			user.Ad = model.Ad;
 			user.Soyad = model.Soyad;
 			user.DogumTarihi = model.DogumTarihi;
 			user.Boy = model.Boy;
 			user.Kilo = model.Kilo;
 
-			// Antrenör alanları
 			var roles = await _userManager.GetRolesAsync(user);
 			if (roles.Contains("Antrenör"))
 			{
 				user.SalonId = model.SalonId;
 
-				// Uzmanlıkları güncelle
-				var mevcut = _context.AntrenorUzmanlikAlanlari.Where(a => a.AntrenorId == user.Id);
+				// Uzmanlık alanlarını güncelle
+				var mevcut = _context.AntrenorUzmanlikAlanlari
+					.Where(a => a.AntrenorId == user.Id)
+					.ToList();
+
 				_context.AntrenorUzmanlikAlanlari.RemoveRange(mevcut);
 
-				if (model.SecilenUzmanliklar != null)
+				if (model.SecilenUzmanliklar != null && model.SecilenUzmanliklar.Any())
 				{
 					foreach (var uzmId in model.SecilenUzmanliklar)
 					{
@@ -287,12 +286,16 @@ namespace FitnessCenterReservationSystem.Controllers
 				}
 			}
 
-			await _userManager.UpdateAsync(user);
+			// Önce EF Core tablosunu kaydet (uzmanlık alanları)
 			await _context.SaveChangesAsync();
+
+			// Identity alanlarını kaydet
+			await _userManager.UpdateAsync(user);
 
 			TempData["Success"] = "Profiliniz güncellendi.";
 			return RedirectToAction("Profile");
 		}
+
 
 	}
 }
