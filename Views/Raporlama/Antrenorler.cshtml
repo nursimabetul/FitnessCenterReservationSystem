@@ -1,0 +1,28 @@
+﻿@model List<FitnessCenterReservationSystem.ViewModels.AntrenorViewModel>
+
+<h3>Tüm Antrenörler</h3>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ad</th>
+                <th>Soyad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Ad</td>
+                    <td>@a.Soyad</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

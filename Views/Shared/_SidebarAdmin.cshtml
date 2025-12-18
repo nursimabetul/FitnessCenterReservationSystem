@@ -68,10 +68,26 @@
 
         <!-- Raporlar -->
         <li class="nav-item">
-            <a href="/Raporlar" class="nav-link @(currentController == "Raporlar" ? "active" : "")">
-                <i class="bi bi-file-earmark-bar-graph me-2"></i> Raporlar
-            </a>
+            <span class="nav-link text-muted"><i class="bi bi-file-earmark-bar-graph me-2"></i> Raporlar</span>
+            <ul class="nav flex-column ms-3">
+                <li class="nav-item">
+                    <a href="/Raporlama/Antrenorler" class="nav-link @(currentController == "Raporlama" && currentAction == "Antrenorler" ? "active" : "")">
+                        <i class="bi bi-people me-1"></i> Antrenörler
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Raporlama/MusaitAntrenorler" class="nav-link @(currentController == "Raporlama" && currentAction == "MusaitAntrenorler" ? "active" : "")">
+                        <i class="bi bi-person-check me-1"></i> Müsait Antrenörler
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Raporlama/UyeRandevulari" class="nav-link @(currentController == "Raporlama" && currentAction == "UyeRandevulari" ? "active" : "")">
+                        <i class="bi bi-calendar-week me-1"></i> Üye Randevuları
+                    </a>
+                </li>
+            </ul>
         </li>
+
 
         <!-- Tanımlamalar -->
         <li class="nav-item">

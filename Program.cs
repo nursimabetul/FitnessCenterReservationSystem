@@ -15,7 +15,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
+// HttpClient servisi 
+builder.Services.AddHttpClient();
 
 // Identity  tanýmlanmasý
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

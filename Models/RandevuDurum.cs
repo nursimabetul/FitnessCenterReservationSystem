@@ -4,6 +4,7 @@
 	{
 		Beklemede = 0,
 		Onaylandi = 1,
-		Iptal = 2
+		Reddedildi = 2,
+		Iptal = 3
 	}
 }

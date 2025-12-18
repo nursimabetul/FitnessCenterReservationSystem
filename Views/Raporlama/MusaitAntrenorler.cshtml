@@ -1,0 +1,49 @@
+﻿@model List<dynamic>
+@{
+    ViewData["Title"] = "Müsait Antrenörler";
+}
+
+<h2>Müsait Antrenörler</h2>
+
+<form method="post" class="mb-3 row g-2">
+    <div class="col-md-3">
+        <label>Tarih</label>
+        <input type="date" name="tarih" class="form-control" value="@ViewBag.Tarih" required />
+    </div>
+    <div class="col-md-3">
+        <label>Başlangıç Saati</label>
+        <input type="time" name="baslangic" class="form-control" value="@ViewBag.Baslangic" required />
+    </div>
+    <div class="col-md-3">
+        <label>Bitiş Saati</label>
+        <input type="time" name="bitis" class="form-control" value="@ViewBag.Bitis" required />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Ara</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Gösterilecek antrenör yok veya lütfen formu doldurun.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ad</th>
+                <th>Soyad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.ad</td>
+                    <td>@a.soyad</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

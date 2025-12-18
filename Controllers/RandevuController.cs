@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FitnessCenterReservationSystem.Controllers
 {
@@ -21,260 +18,236 @@ namespace FitnessCenterReservationSystem.Controllers
 			_context = context;
 		}
 
-		// GET: Randevu/Index
+		// =====================================================
+		// 👤 ÜYE
+		// =====================================================
 
-		[Authorize(Roles = "Admin,Üye,Antrenör")]
-		public async Task<IActionResult> Index(string tarihFilter = null)
-		{
-			IQueryable<Randevu> randevular = _context.Randevular
-				.Include(r => r.Uye)
-				.Include(r => r.Antrenor)
-				.Include(r => r.Hizmet)
-				.Include(r => r.Salon);
-
-			if (User.IsInRole("Üye"))
-			{
-				var uyeId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).Id;
-				randevular = randevular.Where(r => r.UyeId == uyeId);
-			}
-			else if (User.IsInRole("Antrenör"))
-			{
-				var antrenorId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).Id;
-				randevular = randevular.Where(r => r.AntrenorId == antrenorId);
-
-				// Tarih filtresi varsa uygula
-				if (!string.IsNullOrEmpty(tarihFilter) && DateTime.TryParse(tarihFilter, out var filtreTarih))
-				{
-					randevular = randevular.Where(r => r.Tarih == filtreTarih);
-				}
-			}
-
-			return View(await randevular.OrderBy(r => r.Tarih).ToListAsync());
-		}
-
-
-
-		// GET: Randevu/Create
-		[Authorize(Roles = "Admin,Üye")]
+		[Authorize(Roles = "Üye")]
 		public async Task<IActionResult> Create()
 		{
 			var model = new RandevuViewModel
 			{
-				Uyeler = await _context.Users
-					.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == "Üye"))
-					.Select(u => new SelectListItem { Value = u.Id, Text = u.UserName })
-					.ToListAsync(),
 				Antrenorler = await _context.Users
-					.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == "Antrenör"))
-					.Select(u => new SelectListItem { Value = u.Id, Text = u.UserName })
+					.Where(u => u.AntrenorHizmetler.Any())
+					.Select(u => new SelectListItem
+					{
+						Value = u.Id,
+						Text = u.Ad + " " + u.Soyad
+					})
 					.ToListAsync(),
+
 				Hizmetler = await _context.Hizmetler
-					.Select(h => new SelectListItem { Value = h.Id.ToString(), Text = h.Ad })
+					.Select(h => new SelectListItem
+					{
+						Value = h.Id.ToString(),
+						Text = h.Ad
+					})
 					.ToListAsync(),
+
 				Salonlar = await _context.Salonlar
-					.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Ad })
-					.ToListAsync(),
-				Durum = RandevuDurum.Beklemede
+					.Select(s => new SelectListItem
+					{
+						Value = s.Id.ToString(),
+						Text = s.Ad
+					})
+					.ToListAsync()
 			};
 
 			return View(model);
 		}
 
-		// POST: Randevu/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin,Üye")]
+		[Authorize(Roles = "Üye")]
 		public async Task<IActionResult> Create(RandevuViewModel model)
 		{
-			if (!ModelState.IsValid) return View(model);
+			if (!ModelState.IsValid)
+				return View(model);
 
-			// Çakışma kontrolü
-			bool conflict = await _context.Randevular.AnyAsync(r =>
-				r.AntrenorId == model.AntrenorId &&
-				r.Tarih == model.Tarih &&
-				((r.BaslangicSaati <= model.BaslangicSaati && r.BitisSaati > model.BaslangicSaati) ||
-				 (r.BaslangicSaati < model.BitisSaati && r.BitisSaati >= model.BitisSaati))
+			var uyeId = await _context.Users
+				.Where(u => u.UserName == User.Identity!.Name)
+				.Select(u => u.Id)
+				.FirstAsync();
+
+			// 1️⃣ Geçmiş tarih kontrolü
+			if (model.Tarih.Date < DateTime.Today)
+			{
+				ModelState.AddModelError("", "Geçmiş tarih için randevu alınamaz.");
+				return View(model);
+			}
+
+			// 2️⃣ Salon bu hizmeti veriyor mu?
+			bool salonHizmetiVarMi = await _context.Hizmetler
+				.AnyAsync(h => h.Id == model.HizmetId && h.SalonId == model.SalonId);
+
+			if (!salonHizmetiVarMi)
+			{
+				ModelState.AddModelError("", "Seçilen salon bu hizmeti sunmamaktadır.");
+				return View(model);
+			}
+
+			// 3️⃣ Antrenör bu hizmeti veriyor mu?
+			bool antrenorHizmetiVarMi = await _context.AntrenorHizmetler
+				.AnyAsync(x =>
+					x.AntrenorId == model.AntrenorId &&
+					x.HizmetId == model.HizmetId);
+
+			if (!antrenorHizmetiVarMi)
+			{
+				ModelState.AddModelError("", "Antrenör bu hizmeti verememektedir.");
+				return View(model);
+			}
+
+			// 4️⃣ Salon çalışma saatleri
+			var salon = await _context.Salonlar.FindAsync(model.SalonId);
+
+			if (salon == null)
+			{
+				ModelState.AddModelError("", "Salon bulunamadı.");
+				return View(model);
+			}
+
+			if (model.BaslangicSaati < salon.AcilisSaati ||
+				model.BitisSaati > salon.KapanisSaati)
+			{
+				ModelState.AddModelError("", "Salon bu saatlerde hizmet vermemektedir.");
+				return View(model);
+			}
+
+
+			// 5️⃣ Antrenör çalışma saatleri
+			bool antrenorMusaitMi = await _context.AntrenorCalismaSaatleri.AnyAsync(cs =>
+				cs.AntrenorId == model.AntrenorId &&
+				cs.Gun == model.Tarih.DayOfWeek &&
+				model.BaslangicSaati >= cs.BaslangicSaati &&
+				model.BitisSaati <= cs.BitisSaati
 			);
 
-			if (conflict)
+			if (!antrenorMusaitMi)
 			{
-				TempData["Error"] = "Seçilen saatte antrenör başka bir randevuda.";
+				ModelState.AddModelError("", "Antrenör bu saatlerde çalışmamaktadır.");
+				return View(model);
+			}
+
+			// 6️⃣ Çakışma kontrolü
+			bool cakismaVarMi = await _context.Randevular.AnyAsync(r =>
+				r.AntrenorId == model.AntrenorId &&
+				r.Tarih == model.Tarih &&
+				r.Durum != RandevuDurum.Iptal &&
+				(
+					r.BaslangicSaati < model.BitisSaati &&
+					model.BaslangicSaati < r.BitisSaati
+				)
+			);
+
+			if (cakismaVarMi)
+			{
+				ModelState.AddModelError("", "Bu saat aralığında başka bir randevu bulunmaktadır.");
 				return View(model);
 			}
 
 			var randevu = new Randevu
 			{
-				UyeId = model.UyeId,
+				UyeId = uyeId,
 				AntrenorId = model.AntrenorId,
-				HizmetId = model.HizmetId,
 				SalonId = model.SalonId,
+				HizmetId = model.HizmetId,
 				Tarih = model.Tarih,
 				BaslangicSaati = model.BaslangicSaati,
 				BitisSaati = model.BitisSaati,
-				Durum = model.Durum
+				Durum = RandevuDurum.Beklemede
 			};
 
 			_context.Randevular.Add(randevu);
 			await _context.SaveChangesAsync();
 
-			TempData["Success"] = "Randevu başarıyla oluşturuldu.";
-			return RedirectToAction(nameof(Index));
+			TempData["Success"] = "Randevu talebiniz oluşturuldu.";
+			return RedirectToAction(nameof(MyRandevular));
 		}
 
-		// GET: Randevu/Edit/5
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> Edit(int id)
+		[Authorize(Roles = "Üye")]
+		public async Task<IActionResult> MyRandevular()
 		{
-			var randevu = await _context.Randevular.FindAsync(id);
-			if (randevu == null) return NotFound();
+			var uyeId = await _context.Users
+				.Where(u => u.UserName == User.Identity!.Name)
+				.Select(u => u.Id)
+				.FirstAsync();
 
-			var model = new RandevuViewModel
-			{
-				Id = randevu.Id,
-				UyeId = randevu.UyeId,
-				AntrenorId = randevu.AntrenorId,
-				HizmetId = randevu.HizmetId,
-				SalonId = randevu.SalonId,
-				Tarih = randevu.Tarih,
-				BaslangicSaati = randevu.BaslangicSaati,
-				BitisSaati = randevu.BitisSaati,
-				Durum = (RandevuDurum)randevu.Durum,
-				Uyeler = await _context.Users
-					.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == "Üye"))
-					.Select(u => new SelectListItem { Value = u.Id, Text = u.UserName })
-					.ToListAsync(),
-				Antrenorler = await _context.Users
-					.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == "Antrenör"))
-					.Select(u => new SelectListItem { Value = u.Id, Text = u.UserName })
-					.ToListAsync(),
-				Hizmetler = await _context.Hizmetler.Select(h => new SelectListItem { Value = h.Id.ToString(), Text = h.Ad }).ToListAsync(),
-				Salonlar = await _context.Salonlar.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Ad }).ToListAsync()
-			};
-
-			return View(model);
-		}
-
-		// POST: Randevu/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> Edit(int id, RandevuViewModel model)
-		{
-			if (!ModelState.IsValid) return View(model);
-			if (id != model.Id) return NotFound();
-
-			bool conflict = await _context.Randevular.AnyAsync(r =>
-				r.Id != model.Id &&
-				r.AntrenorId == model.AntrenorId &&
-				r.Tarih == model.Tarih &&
-				((r.BaslangicSaati <= model.BaslangicSaati && r.BitisSaati > model.BaslangicSaati) ||
-				 (r.BaslangicSaati < model.BitisSaati && r.BitisSaati >= model.BitisSaati))
-			);
-
-			if (conflict)
-			{
-				TempData["Error"] = "Seçilen saatte antrenör başka bir randevuda.";
-				return View(model);
-			}
-
-			var randevu = await _context.Randevular.FindAsync(id);
-			randevu.UyeId = model.UyeId;
-			randevu.AntrenorId = model.AntrenorId;
-			randevu.HizmetId = model.HizmetId;
-			randevu.SalonId = model.SalonId;
-			randevu.Tarih = model.Tarih;
-			randevu.BaslangicSaati = model.BaslangicSaati;
-			randevu.BitisSaati = model.BitisSaati;
-			randevu.Durum = model.Durum;
-
-			_context.Update(randevu);
-			await _context.SaveChangesAsync();
-
-			TempData["Success"] = "Randevu başarıyla güncellendi.";
-			return RedirectToAction(nameof(Index));
-		}
-
-		// GET: Randevu/Delete/5
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> Delete(int id)
-		{
-			var randevu = await _context.Randevular
-				.Include(r => r.Uye)
-				.Include(r => r.Antrenor)
-				.Include(r => r.Hizmet)
-				.Include(r => r.Salon)
-				.FirstOrDefaultAsync(r => r.Id == id);
-
-			if (randevu == null) return NotFound();
-
-			return View(randevu);
-		}
-
-		// POST: Randevu/Delete/5
-		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> DeleteConfirmed(int id)
-		{
-			var randevu = await _context.Randevular.FindAsync(id);
-			if (randevu != null)
-			{
-				_context.Randevular.Remove(randevu);
-				await _context.SaveChangesAsync();
-				TempData["Success"] = "Randevu başarıyla silindi.";
-			}
-
-			return RedirectToAction(nameof(Index));
-		}
-
-		// ================= API ENDPOINTLER =================
-
-		[HttpGet("api/uye/{uyeId}/randevular")]
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> UyeRandevulari(string uyeId)
-		{
 			var list = await _context.Randevular
-				.Include(r => r.Hizmet)
 				.Include(r => r.Antrenor)
+				.Include(r => r.Hizmet)
 				.Include(r => r.Salon)
 				.Where(r => r.UyeId == uyeId)
+				.OrderByDescending(r => r.Tarih)
 				.ToListAsync();
 
-			return Ok(list);
+			return View(list);
 		}
 
-		[HttpGet("api/antrenor/{antrenorId}/randevular")]
-		[Authorize(Roles = "Admin,Antrenör")]
-		public async Task<IActionResult> AntrenorRandevulari(string antrenorId)
+		[Authorize(Roles = "Üye")]
+		public async Task<IActionResult> Cancel(int id)
 		{
+			var uyeId = await _context.Users
+				.Where(u => u.UserName == User.Identity!.Name)
+				.Select(u => u.Id)
+				.FirstAsync();
+
+			var randevu = await _context.Randevular.FindAsync(id);
+
+			if (randevu == null || randevu.UyeId != uyeId)
+				return NotFound();
+
+			randevu.Durum = RandevuDurum.Iptal;
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction(nameof(MyRandevular));
+		}
+
+		// =====================================================
+		// 🧑‍🏫 ANTRENÖR
+		// =====================================================
+
+		[Authorize(Roles = "Antrenör")]
+		public async Task<IActionResult> PendingRandevular()
+		{
+			var antrenorId = await _context.Users
+				.Where(u => u.UserName == User.Identity!.Name)
+				.Select(u => u.Id)
+				.FirstAsync();
+
 			var list = await _context.Randevular
-				.Include(r => r.Hizmet)
 				.Include(r => r.Uye)
-				.Include(r => r.Salon)
-				.Where(r => r.AntrenorId == antrenorId)
+				.Include(r => r.Hizmet)
+				.Where(r =>
+					r.AntrenorId == antrenorId &&
+					r.Durum == RandevuDurum.Beklemede)
 				.ToListAsync();
 
-			return Ok(list);
+			return View(list);
 		}
 
-		[HttpGet("api/musait-antrenorler")]
-		[Authorize(Roles = "Admin,Üye")]
-		public async Task<IActionResult> MusaitAntrenorler(DateTime date, TimeSpan startTime, TimeSpan endTime)
+		[Authorize(Roles = "Antrenör")]
+		public async Task<IActionResult> Approve(int id)
 		{
-			var allAntrenorler = await _context.Users
-				.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == "Antrenör"))
-				.ToListAsync();
+			var randevu = await _context.Randevular.FindAsync(id);
+			if (randevu == null) return NotFound();
 
-			var musait = allAntrenorler.Where(a =>
-				!_context.Randevular.Any(r =>
-					r.AntrenorId == a.Id &&
-					r.Tarih == date &&
-					((r.BaslangicSaati <= startTime && r.BitisSaati > startTime) ||
-					 (r.BaslangicSaati < endTime && r.BitisSaati >= endTime))
-				)
-			).ToList();
+			randevu.Durum = RandevuDurum.Onaylandi;
+			await _context.SaveChangesAsync();
 
-			return Ok(musait);
+			return RedirectToAction(nameof(PendingRandevular));
+		}
+
+		[Authorize(Roles = "Antrenör")]
+		public async Task<IActionResult> Reject(int id)
+		{
+			var randevu = await _context.Randevular.FindAsync(id);
+			if (randevu == null) return NotFound();
+
+			randevu.Durum = RandevuDurum.Reddedildi;
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction(nameof(PendingRandevular));
 		}
 	}
 }

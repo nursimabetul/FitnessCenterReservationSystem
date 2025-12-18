@@ -1,0 +1,64 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Üye Randevuları";
+}
+
+<h2>Üye Randevuları</h2>
+
+<!-- Üye seçimi formu -->
+<form method="get" asp-action="UyeRandevulari" class="mb-3">
+    <div class="row g-2 align-items-center">
+        <div class="col-auto">
+            <label for="uyeId" class="col-form-label">Üye Seçiniz:</label>
+        </div>
+        <div class="col-auto">
+            <select id="uyeId" name="uyeId" class="form-select">
+                <option value="">Seçiniz</option>
+                @foreach (var uye in ViewBag.Uyeler)
+                {
+                    <option value="@uye.Id">@uye.Ad @uye.Soyad</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Getir</button>
+        </div>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Başlangıç Saati</th>
+                <th>Bitiş Saati</th>
+                <th>Durum</th>
+                <th>Antrenör</th>
+                <th>Hizmet</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@((DateTime)r.Tarih).ToString("yyyy-MM-dd")</td>
+                    <td>@r.BaslangicSaati</td>
+                    <td>@r.BitisSaati</td>
+                    <td>@r.Durum</td>
+                    <td>@r.Antrenor</td>
+                    <td>@r.Hizmet</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+else
+{
+    <div class="alert alert-info">Henüz randevu yok veya üye seçilmedi.</div>
+}
