@@ -20,13 +20,22 @@
             <dd class="col-sm-9">@Model.Icerik</dd>
 
             <dt class="col-sm-3 fw-semibold">Tarih</dt>
-            <dd class="col-sm-9">@Model.Tarih</dd>
+            <dd class="col-sm-9">@Model.Tarih.ToString("dd.MM.yyyy HH:mm")</dd>
 
             <dt class="col-sm-3 fw-semibold">Salon</dt>
-            <dd class="col-sm-9">@Model.Salon.Ad</dd>
+            <dd class="col-sm-9">@Model.Salon?.Ad</dd>
 
             <dt class="col-sm-3 fw-semibold">Oluşturan</dt>
-            <dd class="col-sm-9">@Model.Olusturan.Ad @Model.Olusturan.Soyad</dd>
+            <dd class="col-sm-9">@Model.Olusturan?.Ad @Model.Olusturan?.Soyad</dd>
+
+            @* Resim varsa göster *@
+            @if (!string.IsNullOrEmpty(Model.ResimYolu))
+            {
+                <dt class="col-sm-3 fw-semibold">Resim</dt>
+                <dd class="col-sm-9">
+                    <img src="@Model.ResimYolu" class="img-fluid rounded" alt="Haber Resmi" style="max-height:250px;" />
+                </dd>
+            }
         </dl>
 
         <div class="d-flex gap-2">

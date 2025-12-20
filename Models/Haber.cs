@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitnessCenterReservationSystem.Models
 {
@@ -26,5 +27,13 @@ namespace FitnessCenterReservationSystem.Models
 		// Opsiyonel: Duyuruyu kim oluşturdu
 		public string? OlusturanId { get; set; }
 		public ApplicationUser? Olusturan { get; set; }
+
+		// Yeni: Resim yolu
+		[Display(Name = "Resim")]
+		public string? ResimYolu { get; set; }
+
+		// Formdan dosya almak için
+		[NotMapped]
+		public IFormFile? ResimDosyasi { get; set; }
 	}
 }

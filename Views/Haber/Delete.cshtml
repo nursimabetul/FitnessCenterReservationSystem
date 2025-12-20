@@ -30,7 +30,15 @@
             <dd class="col-sm-9">@Html.DisplayFor(model => model.Salon.Ad)</dd>
 
             <dt class="col-sm-3 fw-semibold">@Html.DisplayNameFor(model => model.Olusturan)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Olusturan.Ad + " " + model.Olusturan.Soyad)</dd>
+            <dd class="col-sm-9">@($"{Model.Olusturan.Ad} {Model.Olusturan.Soyad}")</dd>
+            @* Yeni: Haber resmi *@
+            @if (!string.IsNullOrEmpty(Model.ResimYolu))
+            {
+                <dt class="col-sm-3 fw-semibold">Resim</dt>
+                <dd class="col-sm-9">
+                    <img src="@Model.ResimYolu" class="img-fluid rounded" alt="Haber Resmi" style="max-height:150px;" />
+                </dd>
+            }
         </dl>
 
         <form asp-action="Delete" class="d-flex gap-2">
@@ -45,5 +53,5 @@
             </a>
         </form>
 
-    </div> <!-- card-body kapanışı -->
-</div> <!-- card kapanışı -->
+    </div>
+</div>

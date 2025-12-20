@@ -1,0 +1,60 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Haber>
+
+@{
+    ViewData["Title"] = "Haberler";
+}
+
+<h4 class="mb-4">
+    <i class="bi bi-megaphone text-primary me-2"></i> Haberler
+</h4>
+
+@if (Model.Any())
+{
+    <div class="accordion" id="haberAccordion">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            var haber = Model.ElementAt(i);
+            var collapseId = $"collapse{i}";
+            var headingId = $"heading{i}";
+            <div class="accordion-item mb-2 shadow-sm rounded">
+                <h2 class="accordion-header" id="@headingId">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+                        <i class="bi bi-megaphone me-2 text-primary"></i> @haber.Baslik
+                    </button>
+                </h2>
+                <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#haberAccordion">
+                    <div class="accordion-body">
+                        @* Resim *@
+                        @if (!string.IsNullOrEmpty(haber.ResimYolu))
+                        {
+                            <img src="@haber.ResimYolu" class="img-fluid rounded mb-2" alt="Haber Resmi" style="max-height:200px; object-fit:cover;" />
+                        }
+
+                        <p>@haber.Icerik</p>
+
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-calendar me-1"></i> @haber.Tarih.ToString("g")
+                            @if (haber.Salon != null)
+                            {
+                                <span class="ms-2"><i class="bi bi-building me-1"></i>@haber.Salon.Ad</span>
+                            }
+                        </p>
+
+                        @if (haber.Olusturan != null)
+                        {
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-person me-1"></i>@haber.Olusturan.Ad @haber.Olusturan.Soyad
+                            </p>
+                        }
+
+                       
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Henüz yayınlanmış haber yok.</p>
+}

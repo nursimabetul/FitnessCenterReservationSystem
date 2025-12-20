@@ -27,6 +27,7 @@
                     <th>Tarih</th>
                     <th>Salon</th>
                     <th>Oluşturan</th>
+                    <th>Resim</th>
                     <th class="text-end" style="width: 150px;">İşlemler</th>
                 </tr>
             </thead>
@@ -38,7 +39,13 @@
                         <td>@item.Icerik</td>
                         <td>@item.Tarih.ToString("g")</td>
                         <td>@item.Salon?.Ad</td>
-                        <td>@item.Olusturan?.Ad @item.Olusturan?.Soyad </td>
+                        <td>@item.Olusturan?.Ad @item.Olusturan?.Soyad</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ResimYolu))
+                            {
+                                <img src="@item.ResimYolu" alt="Haber Resmi" class="img-thumbnail" style="max-height:50px;" />
+                            }
+                        </td>
                         <td class="text-end">
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm px-2 py-1 me-1">
                                 <i class="bi bi-pencil"></i>
@@ -55,5 +62,5 @@
             </tbody>
         </table>
 
-    </div> <!-- card-body kapanışı -->
-</div> <!-- card kapanışı -->
+    </div>
+</div>
