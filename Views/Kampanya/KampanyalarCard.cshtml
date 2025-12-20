@@ -1,0 +1,48 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Kampanya>
+
+@{
+    ViewData["Title"] = "Kampanyalar";
+}
+
+<h4 class="mb-4">
+    <i class="bi bi-gift-fill text-primary me-2"></i>
+    Kampanyalar
+</h4>
+
+@if (Model.Any())
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var kampanya in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0" style="border-radius: 10px; overflow: hidden;">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="bi bi-star-fill me-2"></i>
+                        <h5 class="mb-0">@kampanya.Baslik</h5>
+                    </div>
+                    <div class="card-body bg-light">
+                        <p class="mb-2"><strong>Açıklama:</strong> @kampanya.Aciklama</p>
+                        <p class="mb-2">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            <strong>Başlangıç:</strong> @kampanya.BaslangicTarihi.ToString("g") <br />
+                            <i class="bi bi-calendar-x me-1"></i>
+                            <strong>Bitiş:</strong> @kampanya.BitisTarihi.ToString("g")
+                        </p>
+                        @if (kampanya.Hizmet != null)
+                        {
+                            <p class="mb-1"><i class="bi bi-heart-pulse me-1"></i> <strong>Hizmet:</strong> @kampanya.Hizmet.Ad</p>
+                        }
+                        @if (kampanya.Salon != null)
+                        {
+                            <p class="mb-1"><i class="bi bi-building me-1"></i> <strong>Salon:</strong> @kampanya.Salon.Ad</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Henüz aktif kampanya yok.</p>
+}

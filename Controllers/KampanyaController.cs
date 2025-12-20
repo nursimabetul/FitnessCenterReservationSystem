@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FitnessCenterReservationSystem.Data;
+using FitnessCenterReservationSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FitnessCenterReservationSystem.Data;
-using FitnessCenterReservationSystem.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FitnessCenterReservationSystem.Controllers
 {
@@ -156,8 +157,18 @@ namespace FitnessCenterReservationSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+		// GET: /Kampanya/KampanyaCard
+		[Authorize(Roles = "Üye,Antrenör")]
+		public async Task<IActionResult> KampanyalarCard()
+		{
+			var kampanyalar = await _context.Kampanyalar
+				.Include(k => k.Hizmet)
+				.OrderByDescending(k => k.BaslangicTarihi)
+				.ToListAsync();
 
-        private bool KampanyaExists(int id)
+			return View(kampanyalar);
+		}
+		private bool KampanyaExists(int id)
         {
             return _context.Kampanyalar.Any(e => e.Id == id);
         }
