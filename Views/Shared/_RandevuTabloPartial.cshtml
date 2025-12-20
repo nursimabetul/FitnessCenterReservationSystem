@@ -1,0 +1,65 @@
+﻿@using FitnessCenterReservationSystem.Extensions
+@model IEnumerable<FitnessCenterReservationSystem.ViewModels.RandevularListViewModel>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<table id="randevuTable" class="display table table-hover table-striped align-middle" style="width:100%">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Üye</th>
+            <th>Antrenör</th>
+            <th>Hizmet</th>
+            <th>Ücret</th>
+            <th>Salon</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>Durum</th>
+            <th>Role (Debug)</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="11" class="text-center text-muted">Randevu bulunamadı.</td>
+            </tr>
+        }
+        else
+        {
+            int index = 1;
+            foreach (var r in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@r.UyeAdSoyad</td>
+                    <td>@r.AnrenörAdSoyad</td>
+                    <td>@r.HizmetAd</td>
+                    <td>@r.Ucret.ToString("C")</td>
+                    <td>@r.SalonAd</td>
+                    <td>@r.Tarih.ToString("dd.MM.yyyy")</td>
+                    <td>@r.BaslangicSaati.ToString(@"hh\:mm") - @r.BitisSaati.ToString(@"hh\:mm")</td>
+                    <td><i class="bi @r.DurumIcon me-1"></i> @r.DurumLabel</td>
+                    <td><strong>@r.UserRole</strong> | <em>@r.Durum</em></td>
+                    <td>
+                        @if (r.UserRole == "Admin" || r.UserRole == "Antrenör")
+                        {
+                            <a class="btn btn-sm btn-success me-1 @(r.Durum == RandevuDurum.Beklemede ? "" : "disabled")" href="/Antrenor/Approve/@r.Id" title="Onayla"><i class="bi bi-check-lg"></i></a>
+                            <a class="btn btn-sm btn-danger me-1 @(r.Durum == RandevuDurum.Beklemede ? "" : "disabled")" href="/Antrenor/Reject/@r.Id" title="Reddet"><i class="bi bi-x-lg"></i></a>
+                            <a class="btn btn-sm btn-warning @(r.Durum == RandevuDurum.Beklemede || r.Durum == RandevuDurum.Onaylandi ? "" : "disabled")" href="/Antrenor/Iptal/@r.Id" title="İptal"><i class="bi bi-x-circle"></i></a>
+                            <a class="btn btn-sm btn-primary @(r.Durum == RandevuDurum.Onaylandi && r.Tarih < DateTime.Today ? "" : "disabled")" href="/Antrenor/Tamamla/@r.Id" title="Tamamla"><i class="bi bi-check-circle"></i></a>
+                        }
+                        else if (r.UserRole == "Üye")
+                        {
+                            <a class="btn btn-sm btn-warning @(r.Durum == RandevuDurum.Beklemede || r.Durum == RandevuDurum.Onaylandi ? "" : "disabled")" href="/Uye/Iptal/@r.Id" title="İptal"><i class="bi bi-x-circle"></i></a>
+                        }
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+    </tbody>
+</table>

@@ -26,8 +26,6 @@ namespace FitnessCenterReservationSystem.Services
 				await AddRoleAsync(roleManager, "Admin");
 				await AddRoleAsync(roleManager, "Antrenör");
 				await AddRoleAsync(roleManager, "Üye");
-
-
 				// Admin kullanıcı ekle
 				logger.LogInformation("Admin kullanıcı ekleniyor.");
 				var adminEmail = "G211210553@sakarya.edu.tr";
@@ -36,8 +34,11 @@ namespace FitnessCenterReservationSystem.Services
 					var adminUser = new ApplicationUser
 					{
 						Ad = "Nursima Betül",
-
+						Soyad="BALLİ",
+						DogumTarihi= new DateTime(2004, 5, 12),
 						UserName = adminEmail,
+						Boy=175,
+						Kilo=75,
 						NormalizedUserName = adminEmail.ToUpper(),
 						Email = adminEmail,
 						NormalizedEmail = adminEmail.ToUpper(),
@@ -69,6 +70,9 @@ namespace FitnessCenterReservationSystem.Services
 					{
 						Ad = "Betül",
 						Soyad = "BALLİ",
+						DogumTarihi = new DateTime(2004, 6, 20),
+						Boy = 176,
+						Kilo = 76,
 						UserName = uyeEmail,
 						NormalizedUserName = uyeEmail.ToUpper(),
 						Email = uyeEmail,

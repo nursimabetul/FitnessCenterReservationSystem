@@ -1,75 +1,80 @@
-﻿@using FitnessCenterReservationSystem.ViewModels
+﻿@{
+    Layout = "_PublicLayout";
+}
+@using FitnessCenterReservationSystem.ViewModels
 @model LoginViewModel
 
 @{
     ViewData["Title"] = "Login";
-    //Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
 <div class="container-fluid pt-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-5 col-lg-5">
 
-            <div class="account-box">
-                <h2 class="text-center mb-4">Giriş Yap</h2>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
 
-        <form asp-action="Login" method="post" novalidate>
-            @Html.AntiForgeryToken()
+                    <h2 class="text-center mb-4">Giriş Yap</h2>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <form asp-action="Login" method="post" novalidate>
+                        @Html.AntiForgeryToken()
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" autocomplete="username" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" autocomplete="current-password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" autocomplete="username" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="form-check">
-                    <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label"></label>
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label"></label>
+                            </div>
+
+                            <a asp-controller="Account"
+                               asp-action="VerifyEmail"
+                               class="text-decoration-none small">
+                                Şifremi unuttum
+                            </a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            Giriş Yap
+                        </button>
+
+                        <p class="text-center mt-3 mb-1">
+                            Hesabın yok mu?
+                            <a asp-controller="Account"
+                               asp-action="Register"
+                               class="text-decoration-none">
+                                Kayıt Ol
+                            </a>
+                        </p>
+
+                        <div class="text-center">
+                            <a asp-controller="Home"
+                               asp-action="Index"
+                               class="text-decoration-none small">
+                                Ana Sayfaya Dön
+                            </a>
+                        </div>
+                    </form>
+
                 </div>
-
-                <a asp-controller="Account"
-                   asp-action="VerifyEmail"
-                   class="text-decoration-none small">
-                    Şifremi unuttum
-                </a>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2">
-                Giriş Yap
-            </button>
-
-            <p class="text-center mt-3 mb-1">
-                Hesabın yok mu?
-                <a asp-controller="Account"
-                   asp-action="Register"
-                   class="text-decoration-none">
-                    Kayıt Ol
-                </a>
-            </p>
-
-            <div class="text-center">
-                <a asp-controller="Home"
-                   asp-action="Index"
-                   class="text-decoration-none small">
-                    Ana Sayfaya Dön
-                        </a>
-                    </div>
-                </form>
             </div>
 
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     @{

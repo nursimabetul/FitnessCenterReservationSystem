@@ -2,96 +2,112 @@
 @model RegisterViewModel
 
 @{
+    Layout = "_PublicLayout";
     ViewData["Title"] = "Kayıt Ol";
-   // Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
 <div class="container-fluid pt-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-5">
-            <div class="account-box">
-                <h2 class="text-center mb-4">Kayıt Ol</h2>
 
-        <form asp-action="Register" method="post">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
 
-            <div class="mb-3">
-                <label asp-for="Ad" class="form-label"></label>
-                <input asp-for="Ad" class="form-control" />
-                <span asp-validation-for="Ad" class="text-danger"></span>
+                    <h2 class="text-center mb-4">Kayıt Ol</h2>
+
+                    <form asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Ad" class="form-label"></label>
+                            <input asp-for="Ad" class="form-control" />
+                            <span asp-validation-for="Ad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Soyad" class="form-label"></label>
+                            <input asp-for="Soyad" class="form-control" />
+                            <span asp-validation-for="Soyad" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DogumTarihi" class="form-label"></label>
+                            <input asp-for="DogumTarihi" type="date" class="form-control" />
+                            <span asp-validation-for="DogumTarihi" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Boy" class="form-label"></label>
+                            <input asp-for="Boy" type="number" step="0.1" class="form-control" />
+                            <span asp-validation-for="Boy" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Kilo" class="form-label"></label>
+                            <input asp-for="Kilo" type="number" step="0.1" class="form-control" />
+                            <span asp-validation-for="Kilo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role"
+                                    asp-items="@(new SelectList(ViewData["Roles"] as List<string>))"
+                                    class="form-select">
+                                <option value="">Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            Kayıt Ol
+                        </button>
+
+                        <p class="text-center mt-3 mb-1">
+                            Zaten hesabınız var mı?
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="text-decoration-none">
+                                Giriş Yap
+                            </a>
+                        </p>
+
+                        <div class="text-center">
+                            <a asp-controller="Home"
+                               asp-action="Index"
+                               class="text-decoration-none small">
+                                Geri Dön
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Soyad" class="form-label"></label>
-                <input asp-for="Soyad" class="form-control" />
-                <span asp-validation-for="Soyad" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="DogumTarihi" class="form-label"></label>
-                <input asp-for="DogumTarihi" type="date" class="form-control" />
-                <span asp-validation-for="DogumTarihi" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Boy" class="form-label"></label>
-                <input asp-for="Boy" type="number" step="0.1" class="form-control" />
-                <span asp-validation-for="Boy" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Kilo" class="form-label"></label>
-                <input asp-for="Kilo" type="number" step="0.1" class="form-control" />
-                <span asp-validation-for="Kilo" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Role" class="form-label"></label>
-
-                <select asp-for="Role"
-                        asp-items="@(new SelectList(ViewData["Roles"] as List<string>))"
-                        class="form-select">
-                    <option value="">Seçiniz</option>
-                </select>
-
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-
-
-
-            <input type="submit" value="Kayıt Ol" class="btn btn-primary w-100 p-2" />
-
-            <p class="text-center mt-2">
-                Zaten hesabınız var mı? <a asp-controller="Account" asp-action="Login" class="text-decoration-none">Giriş Yap</a>
-            </p>
-
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Geri Dön</a>
-            </div>
-        </form>
-            </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");

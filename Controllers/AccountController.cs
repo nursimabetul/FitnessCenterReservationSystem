@@ -221,7 +221,7 @@ namespace FitnessCenterReservationSystem.Controllers
 				Boy = user.Boy,
 				Kilo = user.Kilo
 			};
-
+			/*
 			if (isAntrenor)
 			{
 				model.Salonlar = _context.Salonlar
@@ -238,7 +238,10 @@ namespace FitnessCenterReservationSystem.Controllers
 					.Where(a => a.AntrenorId == user.Id)
 					.Select(a => a.UzmanlikAlaniId)
 					.ToList();
-			}
+
+
+	
+			}*/
 
 			return View(model);
 		}
@@ -260,7 +263,7 @@ namespace FitnessCenterReservationSystem.Controllers
 			user.DogumTarihi = model.DogumTarihi;
 			user.Boy = model.Boy;
 			user.Kilo = model.Kilo;
-
+			/*
 			var roles = await _userManager.GetRolesAsync(user);
 			if (roles.Contains("Antrenör"))
 			{
@@ -284,7 +287,7 @@ namespace FitnessCenterReservationSystem.Controllers
 						});
 					}
 				}
-			}
+			}*/
 
 			// Önce Identity alanlarını kaydet
 			var identityResult = await _userManager.UpdateAsync(user);

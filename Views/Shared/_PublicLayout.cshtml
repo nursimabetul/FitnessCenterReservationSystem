@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Fitness Center</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body class="bg-body-tertiary">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-activity me-1"></i> Fitness Center
+            </a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#publicNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="publicNavbar">
+
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/About">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Contact">İletişim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Privacy">Gizlilik</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-primary" href="/Account/Login">Giriş Yap</a>
+                    <a class="btn btn-primary" href="/Account/Register">Üye Ol</a>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="pt-5 mt-4">
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-primary text-white mt-5">
+        <div class="container py-5">
+
+            <div class="row gy-4">
+
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-heart-pulse-fill me-2"></i>
+                        Fitness Center
+                    </h5>
+                    <p class="text-white text-opacity-75">
+                        Sağlıklı yaşam için modern ekipmanlar ve profesyonel eğitmenler.
+                    </p>
+                </div>
+
+                <div class="col-md-4">
+                    <h6 class="fw-semibold mb-3">Hızlı Linkler</h6>
+                    <ul class="list-unstyled">
+                        <li><a class="text-white text-opacity-75 text-decoration-none" href="/">Ana Sayfa</a></li>
+                        <li><a class="text-white text-opacity-75 text-decoration-none" href="/Home/About">Hakkımızda</a></li>
+                        <li><a class="text-white text-opacity-75 text-decoration-none" href="/Home/Contact">İletişim</a></li>
+                        <li><a class="text-white text-opacity-75 text-decoration-none" href="/Home/Privacy">Gizlilik</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h6 class="fw-semibold mb-3">İletişim</h6>
+                    <p class="mb-1 text-white text-opacity-75">
+                        <i class="bi bi-geo-alt-fill me-2"></i> Sakarya, Türkiye
+                    </p>
+                    <p class="mb-1 text-white text-opacity-75">
+                        <i class="bi bi-telephone-fill me-2"></i> +90 123 456 78 90
+                    </p>
+                    <p class="mb-0 text-white text-opacity-75">
+                        <i class="bi bi-envelope-fill me-2"></i> info@fitnesscenter.com
+                    </p>
+                </div>
+
+            </div>
+
+            <hr class="border-light opacity-25 my-4" />
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <span class="text-white text-opacity-75 small">
+                    © 2025 Fitness Center. Tüm hakları saklıdır.
+                </span>
+
+                <div class="mt-3 mt-md-0">
+                    <a href="#" class="text-white text-opacity-75 me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white text-opacity-75 me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white text-opacity-75"><i class="bi bi-twitter-x"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

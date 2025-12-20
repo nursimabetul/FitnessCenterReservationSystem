@@ -1,0 +1,45 @@
+﻿@model FitnessCenterReservationSystem.ViewModels.RandevularListViewModel
+
+@if (Model.UserRole == "Admin" || Model.UserRole == "Antrenör")
+{
+    if (Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Beklemede)
+    {
+        <a class="btn btn-sm btn-success me-1" asp-action="Approve" asp-route-id="@Model.Id" title="Onayla">
+            <i class="bi bi-check-lg"></i>
+        </a>
+        <a class="btn btn-sm btn-danger me-1" asp-action="Reject" asp-route-id="@Model.Id" title="Reddet">
+            <i class="bi bi-x-lg"></i>
+        </a>
+        <a class="btn btn-sm btn-warning" asp-action="Iptal" asp-route-id="@Model.Id" title="İptal">
+            <i class="bi bi-x-circle"></i>
+        </a>
+    }
+    else if (Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Onaylandi &&
+             Model.Tarih < DateTime.Today)
+    {
+        <a class="btn btn-sm btn-primary" asp-action="Tamamla" asp-route-id="@Model.Id" title="Tamamla">
+            <i class="bi bi-check-circle"></i>
+        </a>
+        <a class="btn btn-sm btn-warning" asp-action="Iptal" asp-route-id="@Model.Id" title="İptal">
+            <i class="bi bi-x-circle"></i>
+        </a>
+    }
+    else if (Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Tamamlandi)
+    {
+        <span class="text-muted">Tamamlandı</span>
+    }
+}
+else if (Model.UserRole == "Üye")
+{
+    if (Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Beklemede ||
+        Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Onaylandi)
+    {
+        <a class="btn btn-sm btn-warning" asp-action="Iptal" asp-route-id="@Model.Id" title="İptal">
+            <i class="bi bi-x-circle"></i>
+        </a>
+    }
+    else if (Model.Durum == FitnessCenterReservationSystem.Models.RandevuDurum.Tamamlandi)
+    {
+        <span class="text-muted">Tamamlandı</span>
+    }
+}

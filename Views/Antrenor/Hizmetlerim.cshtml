@@ -1,0 +1,40 @@
+﻿@model List<FitnessCenterReservationSystem.ViewModels.HizmetCheckboxVM>
+
+<h4>Hizmetlerim</h4>
+
+<form asp-action="Hizmetlerim" method="post">
+	@Html.AntiForgeryToken()
+
+	<table class="table table-bordered table-hover">
+		<thead class="table-light">
+			<tr>
+				<th></th>
+				<th>Hizmet</th>
+				<th>Süre (dk)</th>
+				<th>Ücret</th>
+				<th>Salon</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var h in Model)
+			{
+				<tr>
+					<td>
+						<input type="checkbox"
+							   name="secilenHizmetler"
+							   value="@h.Id"
+							   @(h.Secili ? "checked" : "") />
+					</td>
+					<td>@h.Ad</td>
+					<td>@h.SureDakika</td>
+					<td>@h.Ucret ₺</td>
+					<td>@h.SalonAdi</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<button type="submit" class="btn btn-success">
+		Kaydet
+	</button>
+</form>

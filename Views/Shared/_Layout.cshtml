@@ -18,12 +18,10 @@
 </head>
 
 <body class="@(SignInManager.IsSignedIn(User)
-    ? "layout-fixed sidebar-expand-lg bg-body-tertiary"
-    : "bg-body-tertiary pt-5")">
+          ? "layout-fixed sidebar-expand-lg bg-body-tertiary"
+          : "bg-body-tertiary pt-5")">
 
     <div class="app-wrapper">
-
-     
 
         @if (SignInManager.IsSignedIn(User))
         {
@@ -35,56 +33,84 @@
         }
         else
         {
-            <!-- Public kullanıcı menüsü -->
+            <!-- PUBLIC NAVBAR -->
             @await Html.PartialAsync("_PublicNavbar")
         }
 
-
         <!-- MAIN CONTENT -->
-        <main class="app-main">
-            <div class="container-fluid pt-3">
-				@await Html.PartialAsync("_Notification")    
-				@RenderBody()
-
-                @if (!SignInManager.IsSignedIn(User))
-                {
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <main class="app-main">
+                <div class="container-fluid pt-3">
+                    @await Html.PartialAsync("_Notification")
+                    @RenderBody()
+                </div>
+            </main>
+        }
+        else
+        {
+            <main>
+                <div class="container pt-5">
+                    @await Html.PartialAsync("_Notification")
+                    @RenderBody()
                     @await Html.PartialAsync("_PublicFooter")
-                }
-            </div>
-        </main>
+                </div>
+            </main>
+        }
 
     </div>
 
-
+    <!-- ALERT AUTO HIDE -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Tüm .alert sınıflı mesajlar
-            const alerts = document.querySelectorAll(".alert");
-
-            alerts.forEach(alert => {
-                // 2 saniye sonra kaybolmaya başla
+            document.querySelectorAll(".alert").forEach(alert => {
                 setTimeout(() => {
-                    alert.style.transition = "opacity 0.5s ease"; // yumuşak geçiş
-                    alert.style.opacity = "0"; // görünürlüğü azalt
-
-                    // 0.5 saniye sonra DOM'dan kaldır
-                    setTimeout(() => {
-                        if (alert.parentNode) {
-                            alert.parentNode.removeChild(alert);
-                        }
-                    }, 500);
-
-                }, 2000); // 2 saniye görünür kalır
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500);
+                }, 2000);
             });
         });
     </script>
 
+    <!-- JS FILES (ORDER IS IMPORTANT) -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/dist/js/adminlte.js"></script>
 
+    <!-- SIDEBAR TREEVIEW STATE -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            const treeItems = document.querySelectorAll(".has-treeview");
+            const openMenu = localStorage.getItem("openMenu");
+
+            // Sayfa yüklenince açık menüyü geri aç
+            if (openMenu) {
+                const menu = document.querySelector(`[data-menu="${openMenu}"]`);
+                if (menu) {
+                    menu.classList.add("menu-open");
+                    menu.querySelector(".nav-link").classList.add("active");
+                }
+            }
+
+            // Menü tıklanınca state kaydet
+            treeItems.forEach(item => {
+                const link = item.querySelector(".nav-link");
+                link.addEventListener("click", function () {
+                    const key = item.getAttribute("data-menu");
+
+                    if (item.classList.contains("menu-open")) {
+                        localStorage.removeItem("openMenu");
+                    } else {
+                        localStorage.setItem("openMenu", key);
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-<!-- AdminLTE JS -->
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/dist/js/adminlte.js"></script>
-@await RenderSectionAsync("Scripts", required: false)
 </html>
