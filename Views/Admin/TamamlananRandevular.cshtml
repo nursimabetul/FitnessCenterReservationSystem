@@ -1,0 +1,10 @@
+﻿@model List<FitnessCenterReservationSystem.ViewModels.RandevularListViewModel>
+
+@{
+    ViewData["Title"] = "Tamamlanan Randevular";
+}
+
+<h2>Tamamlanan Randevular</h2>
+<hr />
+
+@await Html.PartialAsync("_RandevuTabloPartial", Model)

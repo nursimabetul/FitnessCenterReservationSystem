@@ -42,10 +42,51 @@
 
         <!-- Randevular -->
         <li class="nav-item">
-            <a href="/Randevular" class="nav-link @(currentController == "Randevular" ? "active" : "")">
-                <i class="bi bi-calendar-week me-2"></i> Randevular
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse"
+               href="#randevularMenu">
+                <span><i class="bi bi-calendar-check me-2"></i> Randevularım</span>
+                <i class="bi bi-chevron-down small"></i>
             </a>
+
+            <div class="collapse @(
+                 new[] { "TumRandevular", "BekleyenRandevular", "OnaylananRandevular", "TamamlananRandevular", "ReddedilenRandevular", "IptalEdilenRandevular" }
+                 .Contains(currentAction) ? "show" : "")" id="randevularMenu">
+                <ul class="nav flex-column ms-3">
+                    <li>
+                        <a href="/Admin/TumRandevular" class="nav-link @(currentAction == "TumRandevular" ? "active" : "")">
+                            <i class="bi bi-card-list me-2"></i> Tüm Randevular
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Admin/BekleyenRandevular" class="nav-link @(currentAction == "BekleyenRandevular" ? "active" : "")">
+                            <i class="bi bi-hourglass-split me-2"></i> Bekleyen
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Admin/OnaylananRandevular" class="nav-link @(currentAction == "OnaylananRandevular" ? "active" : "")">
+                            <i class="bi bi-check-circle me-2"></i> Onaylı
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Admin/TamamlananRandevular" class="nav-link @(currentAction == "TamamlananRandevular" ? "active" : "")">
+                            <i class="bi bi-check-lg me-2"></i> Tamamlanan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Admin/ReddedilenRandevular" class="nav-link @(currentAction == "ReddedilenRandevular" ? "active" : "")">
+                            <i class="bi bi-x-square me-2"></i> Reddedilen
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Admin/IptalEdilenRandevular" class="nav-link @(currentAction == "IptalEdilenRandevular" ? "active" : "")">
+                            <i class="bi bi-x-circle me-2"></i> İptal Edilenler
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </li>
+
 
         <!-- Raporlar -->
         <li class="nav-item">

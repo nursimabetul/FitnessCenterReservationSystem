@@ -1,4 +1,6 @@
-﻿@{
+﻿@model FitnessCenterReservationSystem.ViewModels.DashboardViewModel
+
+@{
     ViewData["Title"] = "Admin Dashboard";
 }
 
@@ -9,56 +11,136 @@
     Admin Dashboard
 </h2>
 
-<div class="row g-4">
+<!-- ===================================================== -->
+<!-- GENEL SİSTEM İSTATİSTİKLERİ -->
+<!-- ===================================================== -->
+<div class="row g-4 mb-4">
 
-    <!-- Salonlar Kartı -->
     <div class="col-md-3">
         <div class="card shadow-sm border-0 text-white bg-primary">
             <div class="card-body d-flex align-items-center">
                 <i class="bi bi-building fs-1 me-3"></i>
                 <div>
-                    <h5 class="card-title mb-1">Salonlar</h5>
-                    <p class="card-text fs-4 mb-0">@ViewBag.SalonCount</p>
+                    <h6 class="mb-1">Salonlar</h6>
+                    <span class="fs-4">@ViewBag.SalonCount</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hizmetler Kartı -->
     <div class="col-md-3">
         <div class="card shadow-sm border-0 text-white bg-success">
             <div class="card-body d-flex align-items-center">
                 <i class="bi bi-clipboard-check fs-1 me-3"></i>
                 <div>
-                    <h5 class="card-title mb-1">Hizmetler</h5>
-                    <p class="card-text fs-4 mb-0">@ViewBag.HizmetCount</p>
+                    <h6 class="mb-1">Hizmetler</h6>
+                    <span class="fs-4">@ViewBag.HizmetCount</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Kampanyalar Kartı -->
     <div class="col-md-3">
         <div class="card shadow-sm border-0 text-white bg-warning">
             <div class="card-body d-flex align-items-center">
                 <i class="bi bi-tag fs-1 me-3"></i>
                 <div>
-                    <h5 class="card-title mb-1">Kampanyalar</h5>
-                    <p class="card-text fs-4 mb-0">@ViewBag.KampanyaCount</p>
+                    <h6 class="mb-1">Kampanyalar</h6>
+                    <span class="fs-4">@ViewBag.KampanyaCount</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Randevular Kartı -->
     <div class="col-md-3">
         <div class="card shadow-sm border-0 text-white bg-danger">
             <div class="card-body d-flex align-items-center">
                 <i class="bi bi-calendar-check fs-1 me-3"></i>
                 <div>
-                    <h5 class="card-title mb-1">Randevular</h5>
-                    <p class="card-text fs-4 mb-0">@ViewBag.RandevuCount</p>
+                    <h6 class="mb-1">Toplam Randevu</h6>
+                    <span class="fs-4">@ViewBag.RandevuCount</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- RANDEVU DURUM İSTATİSTİKLERİ -->
+<!-- ===================================================== -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-2">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="text-warning">Bekleyen</h6>
+                <span class="fs-4">@Model.Bekleyen</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="text-success">Onaylanan</h6>
+                <span class="fs-4">@Model.Onaylanan</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="text-primary">Tamamlanan</h6>
+                <span class="fs-4">@Model.Tamamlanan</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="text-secondary">Reddedilen</h6>
+                <span class="fs-4">@Model.Reddedilen</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h6 class="text-danger">İptal</h6>
+                <span class="fs-4">@Model.IptalEdilen</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- BUGÜNKÜ & YAKLAŞAN RANDEVULAR -->
+<!-- ===================================================== -->
+<div class="row g-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+                <i class="bi bi-calendar-day me-2"></i> Bugünkü Randevular
+            </div>
+            <div class="card-body p-0">
+                @await Html.PartialAsync("_RandevuTabloPartial", Model.BugunRandevular)
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light">
+                <i class="bi bi-calendar-week me-2"></i> Yaklaşan Randevular
+            </div>
+            <div class="card-body p-0">
+                @await Html.PartialAsync("_RandevuTabloPartial", Model.YaklasanRandevular)
             </div>
         </div>
     </div>
@@ -67,8 +149,11 @@
 
 <hr class="my-4" />
 
+<!-- ===================================================== -->
+<!-- SON EKLENENLER -->
+<!-- ===================================================== -->
 <div class="row g-4">
-    <!-- Son Eklenen Salonlar -->
+
     <div class="col-md-6">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light">
@@ -83,7 +168,6 @@
         </div>
     </div>
 
-    <!-- Son Eklenen Antrenörler -->
     <div class="col-md-6">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light">
@@ -92,10 +176,12 @@
             <ul class="list-group list-group-flush">
                 @foreach (var trainer in ViewBag.RecentTrainers)
                 {
-                    <li class="list-group-item">@($"{trainer.Ad} {trainer.Soyad}")</li>
+                    <li class="list-group-item">@trainer.Ad @trainer.Soyad</li>
                 }
             </ul>
         </div>
     </div>
+
 </div>
+
 @await Html.PartialAsync("_LoadingScriptsPartial")

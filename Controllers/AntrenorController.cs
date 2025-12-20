@@ -210,30 +210,7 @@ namespace FitnessCenterReservationSystem.Controllers
 
 		// Bekleyen randevular
 
-		public async Task<IActionResult> Randevularim()
-		{
-			var antrenorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			// Rolü al
-			var role = User.IsInRole("Admin") ? "Admin" :
-					   User.IsInRole("Antrenör") ? "Antrenör" :
-					   User.IsInRole("Üye") ? "Üye" : "";
-
-			var randevular = await _context.Randevular
-				.Where(r => r.AntrenorId == antrenorId)
-				.Include(r => r.Antrenor)
-				.Include(r => r.Uye)
-				.Include(r => r.Hizmet)
-				.Include(r => r.Salon)
-				.OrderByDescending(r => r.Tarih)
-				.ThenByDescending(r => r.BaslangicSaati)
-				.ToListAsync();
-
-			// Map ederken rolü de gönder
-			var model = randevular.Select(r => MapToListViewModel(r, role)).ToList();
-
-			return View(model);
-		}
 
 	
 
@@ -242,38 +219,7 @@ namespace FitnessCenterReservationSystem.Controllers
 
 
 
-		// =====================================================
-		// RANDEVU ONAY / RED
-		// =====================================================
-		public async Task<IActionResult> Approve(int id)
-		{
-			var antrenorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-			var randevu = await _context.Randevular
-				.FirstOrDefaultAsync(r => r.Id == id && r.AntrenorId == antrenorId && r.Durum == RandevuDurum.Beklemede);
-
-			if (randevu == null) return NotFound();
-
-			randevu.Durum = RandevuDurum.Onaylandi;
-			await _context.SaveChangesAsync();
-
-			return RedirectToAction(nameof(Randevularim));
-		}
-
-		public async Task<IActionResult> Reject(int id)
-		{
-			var antrenorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-			var randevu = await _context.Randevular
-				.FirstOrDefaultAsync(r => r.Id == id && r.AntrenorId == antrenorId && r.Durum == RandevuDurum.Beklemede);
-
-			if (randevu == null) return NotFound();
-
-			randevu.Durum = RandevuDurum.Reddedildi;
-			await _context.SaveChangesAsync();
-
-			return RedirectToAction(nameof(Randevularim));
-		}
+	
 
 		// =====================================================
 		// HELPERS
