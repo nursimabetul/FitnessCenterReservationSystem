@@ -1,32 +1,87 @@
-﻿<nav class="mt-2">
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<nav class="mt-2">
     <ul class="nav flex-column">
 
+        <!-- Dashboard -->
         <li class="nav-item">
-            <a href="/Uye" class="nav-link">
+            <a href="/Uye" class="nav-link @(currentController == "Uye" && currentAction == "Index" ? "active" : "")">
                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
         </li>
+		<!-- Çalışma Saatlerim -->
+		<li class="nav-item">
+			<a href="/Randevu/Create" class="nav-link @(currentAction == "Create" ? "active" : "")">
+				<i class="bi bi-calendar-plus me-2"></i> Randevu Al
+			</a>
+		</li>
 
+        <!-- Randevularım -->
         <li class="nav-item">
-            <a href="/Randevu/Create" class="nav-link">
-                <i class="bi bi-calendar-plus me-2"></i> Randevu Al
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse"
+               href="#randevularMenu">
+                <span><i class="bi bi-calendar-check me-2"></i> Randevularım</span>
+                <i class="bi bi-chevron-down small"></i>
+            </a>
+
+            <div class="collapse @(
+                 new[] { "TumRandevular", "BekleyenRandevular", "OnaylananRandevular", "TamamlananRandevular", "ReddedilenRandevular", "IptalEdilenRandevular" }
+                 .Contains(currentAction) ? "show" : "")" id="randevularMenu">
+                <ul class="nav flex-column ms-3">
+                    <li>
+                        <a href="/Uye/TumRandevular" class="nav-link @(currentAction == "TumRandevular" ? "active" : "")">
+                            <i class="bi bi-card-list me-2"></i> Tüm Randevular
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Uye/BekleyenRandevular" class="nav-link @(currentAction == "BekleyenRandevular" ? "active" : "")">
+                            <i class="bi bi-hourglass-split me-2"></i> Bekleyen
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Uye/OnaylananRandevular" class="nav-link @(currentAction == "OnaylananRandevular" ? "active" : "")">
+                            <i class="bi bi-check-circle me-2"></i> Onaylı
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Uye/TamamlananRandevular" class="nav-link @(currentAction == "TamamlananRandevular" ? "active" : "")">
+                            <i class="bi bi-check-lg me-2"></i> Tamamlanan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Uye/ReddedilenRandevular" class="nav-link @(currentAction == "ReddedilenRandevular" ? "active" : "")">
+                            <i class="bi bi-x-square me-2"></i> Reddedilen
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Uye/IptalEdilenRandevular" class="nav-link @(currentAction == "IptalEdilenRandevular" ? "active" : "")">
+                            <i class="bi bi-x-circle me-2"></i> İptal Edilenler
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+
+
+
+        <!-- Uzmanlık Alanlarım -->
+        <li class="nav-item">
+            <a href="/Oneri/Index" class="nav-link @(currentAction == "Index" ? "active" : "")">
+                <i class="AI Önerileri"></i> AI Önerileri
             </a>
         </li>
 
-        <li class="nav-item">
-            <a href="/Randevu/Randevularim" class="nav-link">
-                <i class="bi bi-calendar-week me-2"></i> Randevularım
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/Oneri/Index" class="nav-link">
-                <i class="bi bi-robot me-2"></i> AI Önerileri
-            </a>
-        </li>
 
+
+        <!-- Profilim -->
         <li class="nav-item">
-            <a href="/Account/Profile" class="nav-link">
-                <i class="bi bi-person me-2"></i> Profilim
+            <a href="/Account/Profile" class="nav-link @(currentController == "Account" ? "active" : "")">
+                <i class="bi bi-robot me-2"></i> Profilim
             </a>
         </li>
 

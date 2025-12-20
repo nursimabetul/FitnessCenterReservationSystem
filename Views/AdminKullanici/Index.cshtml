@@ -1,20 +1,16 @@
 ﻿@model IEnumerable<dynamic>
 @{
-    ViewData["Title"] = "Kullanıcı Onay";
+    ViewData["Title"] = "Tüm Kullanıcılar";
 }
 
 <h4 class="mb-3">
-    <i class="bi bi-person-check text-primary me-1"></i>
+    <i class="bi bi-people-fill text-primary me-1"></i>
     @ViewData["Title"]
 </h4>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">Onay bekleyen kullanıcı yok.</div>
-
-    <tr>
-        Onay bekleyen kullanıcı yok.
-    </tr>
+    <div class="alert alert-info">Hiç kullanıcı bulunamadı.</div>
 }
 else
 {
@@ -26,7 +22,8 @@ else
                         <th>Ad Soyad</th>
                         <th>Email</th>
                         <th>Rol</th>
-                        <th>Email Onayı</th>
+                        <th>Onay</th>
+                        <th>Durum</th>
                         <th class="text-end" style="width: 220px;">İşlemler</th>
                     </tr>
                 </thead>
@@ -52,15 +49,25 @@ else
                                         <span class="badge bg-secondary">@item.Role</span>
                                         break;
                                 }
-                            </td>                           
+                            </td>
                             <td>
-                                @if (item.User.EmailConfirmed)
+                                @if (item.User.Onaylandi)
                                 {
                                     <span class="badge bg-success">Onaylandı</span>
                                 }
                                 else
                                 {
                                     <span class="badge bg-warning text-dark">Beklemede</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.User.AktifMi)
+                                {
+                                    <span class="badge bg-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Pasif</span>
                                 }
                             </td>
                             <td class="text-end">
@@ -73,22 +80,22 @@ else
                                                 <i class="bi bi-check me-1"></i> Onayla
                                             </button>
                                         </form>
-                                        <form asp-action="KullaniciReddet" method="post" style="display:inline">
-                                            <input type="hidden" name="id" value="@item.User.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm px-2 py-1">
-                                                <i class="bi bi-x me-1"></i> Reddet
-                                            </button>
-                                        </form>
                                     }
-                                    else
+                                    @if (item.User.AktifMi)
                                     {
-                                        <form asp-action="KullaniciReddet" method="post" style="display:inline">
+                                        <form asp-action="KullaniciPasiflestir" method="post" style="display:inline">
                                             <input type="hidden" name="id" value="@item.User.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm px-2 py-1">
-                                                <i class="bi bi-trash me-1"></i> Silss
+                                            <button type="submit" class="btn btn-warning btn-sm px-2 py-1">
+                                                <i class="bi bi-slash-circle me-1"></i> Pasifleştir
                                             </button>
                                         </form>
                                     }
+                                    <form asp-action="KullaniciSil" method="post" style="display:inline">
+                                        <input type="hidden" name="id" value="@item.User.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm px-2 py-1">
+                                            <i class="bi bi-trash me-1"></i> Sil
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

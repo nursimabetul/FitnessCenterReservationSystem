@@ -1,4 +1,5 @@
-﻿@model IEnumerable<dynamic>
+﻿@using Microsoft.AspNetCore.Http
+@model IEnumerable<FitnessCenterReservationSystem.ViewModels.UyeRandevuViewModel>
 @{
     ViewData["Title"] = "Üye Randevuları";
 }
@@ -26,6 +27,16 @@
     </div>
 </form>
 
+<!-- JSON butonu -->
+@if (!string.IsNullOrEmpty(Context.Request.Query["uyeId"]))
+{
+    <a class="btn btn-secondary mb-3"
+       href="https://localhost:7152/api/raporlama/uye/@(Context.Request.Query["uyeId"])/randevular"
+       target="_blank">
+        API sonucu JSON Görüntüle
+    </a>
+}
+
 @if (Model != null && Model.Any())
 {
     <table class="table table-bordered table-striped">
@@ -43,9 +54,9 @@
             @foreach (var r in Model)
             {
                 <tr>
-                    <td>@((DateTime)r.Tarih).ToString("yyyy-MM-dd")</td>
-                    <td>@r.BaslangicSaati</td>
-                    <td>@r.BitisSaati</td>
+                    <td>@r.Tarih.ToString("yyyy-MM-dd")</td>
+                    <td>@TimeSpan.Parse(r.BaslangicSaati).ToString(@"hh\:mm")</td>
+                    <td>@TimeSpan.Parse(r.BitisSaati).ToString(@"hh\:mm")</td>
                     <td>@r.Durum</td>
                     <td>@r.Antrenor</td>
                     <td>@r.Hizmet</td>
@@ -62,3 +73,13 @@ else
 {
     <div class="alert alert-info">Henüz randevu yok veya üye seçilmedi.</div>
 }
+
+
+
+
+
+
+
+
+
+

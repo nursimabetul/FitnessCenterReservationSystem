@@ -4,6 +4,7 @@
 	{
 		// Randevu istatistikleri
 		public int AktifRandevular { get; set; }
+		public int BugunRandevuSayisi { get; set; }
 		public int Bekleyen { get; set; }
 		public int Onaylanan { get; set; }
 		public int Gecmis { get; set; }

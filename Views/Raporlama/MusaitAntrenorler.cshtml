@@ -23,6 +23,16 @@
     </div>
 </form>
 
+@if (ViewBag.Tarih != null && ViewBag.Baslangic != null && ViewBag.Bitis != null)
+{
+    <a class="btn btn-secondary mb-3"
+       href="https://localhost:7152/api/raporlama/musait-antrenorler?tarih=@ViewBag.Tarih&baslangic=@ViewBag.Baslangic&bitis=@ViewBag.Bitis"
+       target="_blank">
+        API sonucu JSON Görüntüle
+    </a>
+}
+
+
 @if (!Model.Any())
 {
     <p class="text-muted">Gösterilecek antrenör yok veya lütfen formu doldurun.</p>

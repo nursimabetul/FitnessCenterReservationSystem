@@ -83,9 +83,13 @@ namespace FitnessCenterReservationSystem.Controllers
 		// =====================================================
 
 		// GET: UyeRandevulari
+
+		// =====================================================
+		// ÜYE RANDEVULARI
+		// =====================================================
 		public async Task<IActionResult> UyeRandevulari(string? uyeId)
 		{
-			// 1️⃣ Üyeleri getir (dropdown için)
+			// 1️⃣ Üyeleri getir (dropdown)
 			var uyeRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Üye");
 			var uyeler = await _context.Users
 				.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == uyeRole.Id))
@@ -94,29 +98,38 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			ViewBag.Uyeler = uyeler;
 
-			// 2️⃣ Eğer uyeId boşsa, sadece sayfa açılır, randevu listesi boş
 			if (string.IsNullOrEmpty(uyeId))
+				return View(new List<UyeRandevuViewModel>());
+
+			try
 			{
-				return View(new List<dynamic>());
+				var client = _httpClientFactory.CreateClient();
+
+				// 🌟 Tarayıcıdaki cookie’yi HttpClient’a ekle
+				if (Request.Headers.ContainsKey("Cookie"))
+					client.DefaultRequestHeaders.Add("Cookie", Request.Headers["Cookie"].ToString());
+
+				var url = $"https://localhost:7152/api/raporlama/uye/{uyeId}/randevular";
+				var response = await client.GetAsync(url);
+
+				if (!response.IsSuccessStatusCode)
+				{
+					var apiContent = await response.Content.ReadAsStringAsync();
+					ViewBag.Error = $"API Hatası: {response.StatusCode} - {apiContent}";
+					return View(new List<UyeRandevuViewModel>());
+				}
+
+				var json = await response.Content.ReadAsStringAsync();
+				var randevular = JsonConvert.DeserializeObject<List<UyeRandevuViewModel>>(json);
+
+				return View(randevular);
 			}
-
-			// 3️⃣ Seçilen üyenin randevularını API üzerinden getir
-			var client = _httpClientFactory.CreateClient();
-			var url = $"https://localhost:7152/api/raporlama/uye/{uyeId}/randevular";
-			var response = await client.GetAsync(url);
-
-			if (!response.IsSuccessStatusCode)
+			catch (Exception ex)
 			{
-				ViewBag.Error = "Randevular getirilirken hata oluştu.";
-				return View(new List<dynamic>());
+				ViewBag.Error = $"İşlem sırasında hata oluştu: {ex.Message}";
+				return View(new List<UyeRandevuViewModel>());
 			}
-
-			var json = await response.Content.ReadAsStringAsync();
-			var randevular = JsonConvert.DeserializeObject<List<dynamic>>(json);
-
-			return View(randevular);
 		}
-
 
 	}
 

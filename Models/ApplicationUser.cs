@@ -45,5 +45,7 @@ namespace FitnessCenterReservationSystem.Models
 		// Kullanıcı onay durumu
 		[Display(Name = "Onaylandı")]
 		public bool Onaylandi { get; set; } = false; // Başlangıçta onay beklemede
+
+		public bool AktifMi { get; set; } = true; // varsayılan aktif
 	}
 }

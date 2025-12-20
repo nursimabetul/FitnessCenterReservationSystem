@@ -57,8 +57,8 @@
             <div class="card-body d-flex align-items-center">
                 <i class="bi bi-calendar-check fs-1 me-3"></i>
                 <div>
-                    <h6 class="mb-1">Toplam Randevu</h6>
-                    <span class="fs-4">@ViewBag.RandevuCount</span>
+                    <h6 class="mb-1">Bugünkü Randevular</h6>
+                    <span class="fs-4">@Model.BugunRandevuSayisi</span>
                 </div>
             </div>
         </div>
@@ -71,47 +71,68 @@
 <!-- ===================================================== -->
 <div class="row g-4 mb-4">
 
+    <!-- Toplam Randevu -->
     <div class="col-md-2">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h6 class="text-warning">Bekleyen</h6>
-                <span class="fs-4">@Model.Bekleyen</span>
+        <div class="card shadow-sm border-0 text-white bg-dark h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar3 fs-2 mb-2"></i>
+                <h6 class="mb-1">Toplam Randevu</h6>
+                <span class="fs-3 fw-bold">@ViewBag.RandevuCount</span>
             </div>
         </div>
     </div>
 
+    <!-- Bekleyen -->
     <div class="col-md-2">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h6 class="text-success">Onaylanan</h6>
-                <span class="fs-4">@Model.Onaylanan</span>
+        <div class="card shadow-sm border-0 text-white bg-warning h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-hourglass-split fs-2 mb-2"></i>
+                <h6 class="mb-1">Bekleyen</h6>
+                <span class="fs-3 fw-bold">@Model.Bekleyen</span>
             </div>
         </div>
     </div>
 
+    <!-- Onaylanan -->
     <div class="col-md-2">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h6 class="text-primary">Tamamlanan</h6>
-                <span class="fs-4">@Model.Tamamlanan</span>
+        <div class="card shadow-sm border-0 text-white bg-success h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle fs-2 mb-2"></i>
+                <h6 class="mb-1">Onaylanan</h6>
+                <span class="fs-3 fw-bold">@Model.Onaylanan</span>
             </div>
         </div>
     </div>
 
+    <!-- Tamamlanan -->
     <div class="col-md-2">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h6 class="text-secondary">Reddedilen</h6>
-                <span class="fs-4">@Model.Reddedilen</span>
+        <div class="card shadow-sm border-0 text-white bg-primary h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-patch-check fs-2 mb-2"></i>
+                <h6 class="mb-1">Tamamlanan</h6>
+                <span class="fs-3 fw-bold">@Model.Tamamlanan</span>
             </div>
         </div>
     </div>
 
+    <!-- Reddedilen -->
     <div class="col-md-2">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h6 class="text-danger">İptal</h6>
-                <span class="fs-4">@Model.IptalEdilen</span>
+        <div class="card shadow-sm border-0 text-white bg-secondary h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-x-circle fs-2 mb-2"></i>
+                <h6 class="mb-1">Reddedilen</h6>
+                <span class="fs-3 fw-bold">@Model.Reddedilen</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- İptal -->
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 text-white bg-danger h-100 kpi-card">
+            <div class="card-body text-center">
+                <i class="bi bi-slash-circle fs-2 mb-2"></i>
+                <h6 class="mb-1">İptal</h6>
+                <span class="fs-3 fw-bold">@Model.IptalEdilen</span>
             </div>
         </div>
     </div>
@@ -123,7 +144,7 @@
 <!-- ===================================================== -->
 <div class="row g-4">
 
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light">
                 <i class="bi bi-calendar-day me-2"></i> Bugünkü Randevular
@@ -134,7 +155,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light">
                 <i class="bi bi-calendar-week me-2"></i> Yaklaşan Randevular
@@ -147,12 +168,46 @@
 
 </div>
 
-<hr class="my-4" />
+
+<!-- ===================================================== -->
+<!-- GRAFİKLER -->
+<!-- ===================================================== -->
+<div class="row g-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-bold">💰 Randevu Durumuna Göre Ücretler</div>
+            <div class="card-body"><div id="ucretPie"></div></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-bold">📊 Randevu Durum Dağılımı</div>
+            <div class="card-body"><div id="durumDonut"></div></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-bold">🏆 En Popüler Hizmetler</div>
+            <div class="card-body"><div id="hizmetBar"></div></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light fw-bold">🏢 Salonlara Göre Yoğunluk</div>
+            <div class="card-body"><div id="salonBar"></div></div>
+        </div>
+    </div>
+
+</div>
 
 <!-- ===================================================== -->
 <!-- SON EKLENENLER -->
 <!-- ===================================================== -->
-<div class="row g-4">
+<div class="row g-4 mt-4">
 
     <div class="col-md-6">
         <div class="card shadow-sm border-0">
@@ -185,3 +240,36 @@
 </div>
 
 @await Html.PartialAsync("_LoadingScriptsPartial")
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    const ucretData = @Html.Raw(Json.Serialize(ViewBag.RandevuUcretleriPie));
+    const durumData = @Html.Raw(Json.Serialize(ViewBag.RandevuDurumDonut));
+    const hizmetData = @Html.Raw(Json.Serialize(ViewBag.PopulerHizmetlerBar));
+    const salonData = @Html.Raw(Json.Serialize(ViewBag.SalonYogunlukBar));
+
+    new ApexCharts(document.querySelector("#ucretPie"), {
+        chart: { type: 'pie' },
+        labels: ucretData.map(x => x.durum),
+        series: ucretData.map(x => x.toplamUcret)
+    }).render();
+
+    new ApexCharts(document.querySelector("#durumDonut"), {
+        chart: { type: 'donut' },
+        labels: durumData.map(x => x.durum),
+        series: durumData.map(x => x.adet)
+    }).render();
+
+    new ApexCharts(document.querySelector("#hizmetBar"), {
+        chart: { type: 'bar' },
+        series: [{ name: 'Randevu Sayısı', data: hizmetData.map(x => x.adet) }],
+        xaxis: { categories: hizmetData.map(x => x.hizmet) }
+    }).render();
+
+    new ApexCharts(document.querySelector("#salonBar"), {
+        chart: { type: 'bar' },
+        series: [{ name: 'Randevu Sayısı', data: salonData.map(x => x.adet) }],
+        xaxis: { categories: salonData.map(x => x.salon) }
+    }).render();
+</script>

@@ -1,0 +1,19 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Aktif Kullanıcılar";
+}
+
+<h4 class="mb-3">
+    <i class="bi bi-person-check-fill text-success me-1"></i>
+    @ViewData["Title"]
+</h4>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Hiç aktif kullanıcı yok.</div>
+}
+else
+{
+    @* Index.cshtml ile aynı tabloyu kullanabiliriz *@
+    @await Html.PartialAsync("KullaniciTabloPartial", Model)
+}

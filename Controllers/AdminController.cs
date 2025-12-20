@@ -63,6 +63,7 @@ namespace FitnessCenterReservationSystem.Controllers
 			{
 				AktifRandevular = aktifRandevular.Count,
 				BugunRandevular = bugun.ToRandevularListViewModel("Admin"),
+				BugunRandevuSayisi = bugun.Count, 
 				YaklasanRandevular = yaklasan.ToRandevularListViewModel("Admin"),
 				Bekleyen = await _context.Randevular.CountAsync(r => r.Durum == RandevuDurum.Beklemede),
 				Onaylanan = await _context.Randevular.CountAsync(r => r.Durum == RandevuDurum.Onaylandi),
@@ -72,7 +73,61 @@ namespace FitnessCenterReservationSystem.Controllers
 			};
 
 			// =====================================================
-			// GENEL SİSTEM İSTATİSTİKLERİ (ALTTAN EKLENENLER)
+			// 1️⃣ RANDEVU DURUMUNA GÖRE ÜCRETLER (PIE)
+			// =====================================================
+			ViewBag.RandevuUcretleriPie = await _context.Randevular
+				.Include(r => r.Hizmet)
+				.GroupBy(r => r.Durum)
+				.Select(g => new
+				{
+					Durum = g.Key.ToString(),
+					ToplamUcret = g.Sum(x => x.Hizmet.Ucret)
+				})
+				.ToListAsync();
+
+			// =====================================================
+			// 2️⃣ RANDEVU DURUM DAĞILIMI (DONUT)
+			// =====================================================
+			ViewBag.RandevuDurumDonut = await _context.Randevular
+				.GroupBy(r => r.Durum)
+				.Select(g => new
+				{
+					Durum = g.Key.ToString(),
+					Adet = g.Count()
+				})
+				.ToListAsync();
+
+			// =====================================================
+			// 3️⃣ EN POPÜLER HİZMETLER (BAR)
+			// =====================================================
+			ViewBag.PopulerHizmetlerBar = await _context.Randevular
+				.Include(r => r.Hizmet)
+				.GroupBy(r => r.Hizmet.Ad)
+				.Select(g => new
+				{
+					Hizmet = g.Key,
+					Adet = g.Count()
+				})
+				.OrderByDescending(x => x.Adet)
+				.Take(5)
+				.ToListAsync();
+
+			// =====================================================
+			// 4️⃣ SALONLARA GÖRE YOĞUNLUK (BAR)
+			// =====================================================
+			ViewBag.SalonYogunlukBar = await _context.Randevular
+				.Include(r => r.Salon)
+				.GroupBy(r => r.Salon.Ad)
+				.Select(g => new
+				{
+					Salon = g.Key,
+					Adet = g.Count()
+				})
+				.OrderByDescending(x => x.Adet)
+				.ToListAsync();
+
+			// =====================================================
+			// GENEL SİSTEM İSTATİSTİKLERİ
 			// =====================================================
 			ViewBag.SalonCount = await _context.Salonlar.CountAsync();
 			ViewBag.HizmetCount = await _context.Hizmetler.CountAsync();
@@ -91,8 +146,6 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			return View(model);
 		}
-
-
 
 
 		// =====================================================

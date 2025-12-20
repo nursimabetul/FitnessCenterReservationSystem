@@ -2,6 +2,9 @@
 
 <h3>Tüm Antrenörler</h3>
 
+
+
+
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger">@ViewBag.Error</div>
@@ -26,3 +29,9 @@ else
         </tbody>
     </table>
 }
+
+<a class="btn btn-secondary mb-3"
+   href="https://localhost:7152/api/raporlama/antrenorler"
+   target="_blank">
+    API sonucu JSON Görüntüle
+</a>

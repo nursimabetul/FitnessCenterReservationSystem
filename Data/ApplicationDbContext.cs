@@ -169,16 +169,6 @@ namespace FitnessCenterReservationSystem.Data
 			builder.Entity<Haber>()
 				.HasKey(h => h.Id);
 
-
-
-
-
-
-
-
-
-
-
 		}
 
 

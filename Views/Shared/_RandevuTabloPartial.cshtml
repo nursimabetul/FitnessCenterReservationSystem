@@ -26,7 +26,6 @@
             <th>Tarih</th>
             <th>Saat</th>
             <th>Durum</th>
-            <th>Role</th>
             <th>İşlem</th>
         </tr>
     </thead>
@@ -62,9 +61,7 @@
                         <i class="bi @r.DurumIcon me-1"></i>
                         @r.DurumLabel
                     </td>
-                    <td>
-                        <strong>@r.UserRole</strong>
-                    </td>
+             
                     <td>
                         @* ADMIN / ANTRENÖR *@
                         @if (r.UserRole == "Admin" || r.UserRole == "Antrenör")
