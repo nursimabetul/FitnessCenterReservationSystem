@@ -1,11 +1,20 @@
 ﻿@using FitnessCenterReservationSystem.Extensions
 @model IEnumerable<FitnessCenterReservationSystem.ViewModels.RandevularListViewModel>
 
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentUrl = Url.Action(currentAction, currentController);
+}
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-<table id="randevuTable" class="display table table-hover table-striped align-middle" style="width:100%">
+<table id="randevuTable"
+       class="display table table-hover table-striped align-middle"
+       style="width:100%">
+
     <thead class="table-light">
         <tr>
             <th>#</th>
@@ -17,15 +26,18 @@
             <th>Tarih</th>
             <th>Saat</th>
             <th>Durum</th>
-            <th>Role (Debug)</th>
+            <th>Role</th>
             <th>İşlem</th>
         </tr>
     </thead>
+
     <tbody>
         @if (!Model.Any())
         {
             <tr>
-                <td colspan="11" class="text-center text-muted">Randevu bulunamadı.</td>
+                <td colspan="11" class="text-center text-muted">
+                    Randevu bulunamadı.
+                </td>
             </tr>
         }
         else
@@ -41,20 +53,120 @@
                     <td>@r.Ucret.ToString("C")</td>
                     <td>@r.SalonAd</td>
                     <td>@r.Tarih.ToString("dd.MM.yyyy")</td>
-                    <td>@r.BaslangicSaati.ToString(@"hh\:mm") - @r.BitisSaati.ToString(@"hh\:mm")</td>
-                    <td><i class="bi @r.DurumIcon me-1"></i> @r.DurumLabel</td>
-                    <td><strong>@r.UserRole</strong> | <em>@r.Durum</em></td>
                     <td>
+                        @r.BaslangicSaati.ToString(@"hh\:mm")
+                        -
+                        @r.BitisSaati.ToString(@"hh\:mm")
+                    </td>
+                    <td>
+                        <i class="bi @r.DurumIcon me-1"></i>
+                        @r.DurumLabel
+                    </td>
+                    <td>
+                        <strong>@r.UserRole</strong>
+                    </td>
+                    <td>
+                        @* ADMIN / ANTRENÖR *@
                         @if (r.UserRole == "Admin" || r.UserRole == "Antrenör")
                         {
-                            <a class="btn btn-sm btn-success me-1 @(r.Durum == RandevuDurum.Beklemede ? "" : "disabled")" href="/Antrenor/Approve/@r.Id" title="Onayla"><i class="bi bi-check-lg"></i></a>
-                            <a class="btn btn-sm btn-danger me-1 @(r.Durum == RandevuDurum.Beklemede ? "" : "disabled")" href="/Antrenor/Reject/@r.Id" title="Reddet"><i class="bi bi-x-lg"></i></a>
-                            <a class="btn btn-sm btn-warning @(r.Durum == RandevuDurum.Beklemede || r.Durum == RandevuDurum.Onaylandi ? "" : "disabled")" href="/Antrenor/Iptal/@r.Id" title="İptal"><i class="bi bi-x-circle"></i></a>
-                            <a class="btn btn-sm btn-primary @(r.Durum == RandevuDurum.Onaylandi && r.Tarih < DateTime.Today ? "" : "disabled")" href="/Antrenor/Tamamla/@r.Id" title="Tamamla"><i class="bi bi-check-circle"></i></a>
+                            @* BEKLEYEN *@
+                            if (r.Durum == RandevuDurum.Beklemede)
+                            {
+                                <!-- ONAYLA -->
+                                <form asp-controller="Randevu"
+                                      asp-action="Onayla"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-success me-1"
+                                            title="Onayla">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
+
+                                <!-- REDDET -->
+                                <form asp-controller="Randevu"
+                                      asp-action="Reddet"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger me-1"
+                                            title="Reddet">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </form>
+
+                                <!-- İPTAL -->
+                                <form asp-controller="Randevu"
+                                      asp-action="Iptal"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-warning"
+                                            title="İptal">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                            }
+
+                            @* ONAYLANMIŞ *@
+                            if (r.Durum == RandevuDurum.Onaylandi)
+                            {
+                                <!-- TAMAMLA -->
+                                <form asp-controller="Randevu"
+                                      asp-action="Tamamla"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-primary me-1"
+                                            title="Tamamla">
+                                        <i class="bi bi-check-circle"></i>
+                                    </button>
+                                </form>
+
+                                <!-- İPTAL -->
+                                <form asp-controller="Randevu"
+                                      asp-action="Iptal"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-warning"
+                                            title="İptal">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                            }
                         }
+
+                        @* ÜYE *@
                         else if (r.UserRole == "Üye")
                         {
-                            <a class="btn btn-sm btn-warning @(r.Durum == RandevuDurum.Beklemede || r.Durum == RandevuDurum.Onaylandi ? "" : "disabled")" href="/Uye/Iptal/@r.Id" title="İptal"><i class="bi bi-x-circle"></i></a>
+                            if (r.Durum == RandevuDurum.Beklemede ||
+                            r.Durum == RandevuDurum.Onaylandi)
+                            {
+                                <form asp-controller="Randevu"
+                                      asp-action="Iptal"
+                                      asp-route-id="@r.Id"
+                                      asp-route-returnUrl="@currentUrl"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-warning"
+                                            title="İptal">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                            }
                         }
                     </td>
                 </tr>
@@ -63,3 +175,16 @@
         }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        $('#randevuTable').DataTable({
+            order: [[6, "desc"]],
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            columnDefs: [
+                { orderable: false, targets: [0, 10] }
+            ]
+        });
+    });
+</script>

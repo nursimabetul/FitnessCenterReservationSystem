@@ -41,12 +41,7 @@ namespace FitnessCenterReservationSystem.Controllers
 		}
 
 
-
-
-
-
 		[HttpGet]
-
 		public async Task<JsonResult> GetMusaitSaatler(string antrenorId, string tarih)
 		{
 			// Tarihi parse et
@@ -91,7 +86,7 @@ namespace FitnessCenterReservationSystem.Controllers
 
 
 		// =====================================================
-		// 👤 ÜYE
+		// ÜYE
 		// =====================================================
 
 		[Authorize(Roles = "Üye")]
@@ -118,7 +113,6 @@ namespace FitnessCenterReservationSystem.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Üye")]
 
 		[HttpPost]
 		[Authorize(Roles = "Üye")]
@@ -160,7 +154,7 @@ namespace FitnessCenterReservationSystem.Controllers
 
 			var errors = new List<string>();
 
-			// ✅ Validasyonlar
+			// Validasyonlar
 			if (model.Tarih.Date < DateTime.Today)
 				errors.Add("Geçmiş tarih için randevu alınamaz.");
 
@@ -218,74 +212,10 @@ namespace FitnessCenterReservationSystem.Controllers
 
 
 
-
-
-
-		[Authorize(Roles = "Üye")]
-		public async Task<IActionResult> Randevularim()
-		{
-			// Giriş yapan üyenin Id'sini al
-			var uyeId = await _context.Users
-				.Where(u => u.UserName == User.Identity!.Name)
-				.Select(u => u.Id)
-				.FirstAsync();
-
-			// Sadece bu üyenin randevularını al, tüm navigation property'leri Include et
-			var list = await _context.Randevular
-				.Where(r => r.UyeId == uyeId)
-				.Include(r => r.Antrenor)
-				.Include(r => r.Hizmet)
-				.Include(r => r.Salon)
-				.OrderByDescending(r => r.Tarih)
-				.ToListAsync();
-
-			return View(list);
-		}
-
-
-		[Authorize(Roles = "Üye")]
-		public async Task<IActionResult> Cancel(int id)
-		{
-			var uyeId = await _context.Users
-				.Where(u => u.UserName == User.Identity!.Name)
-				.Select(u => u.Id)
-				.FirstAsync();
-
-			var randevu = await _context.Randevular.FindAsync(id);
-
-			if (randevu == null || randevu.UyeId != uyeId)
-				return NotFound();
-
-			randevu.Durum = RandevuDurum.Iptal;
-			await _context.SaveChangesAsync();
-
-			return RedirectToAction(nameof(Randevularim));
-		}
-
-		// =====================================================
-		// 🧑‍🏫 ANTRENÖR
-		// =====================================================
-
-		[Authorize(Roles = "Antrenör")]
-		public async Task<IActionResult> PendingRandevular()
-		{
-			var antrenorId = await _context.Users
-				.Where(u => u.UserName == User.Identity!.Name)
-				.Select(u => u.Id)
-				.FirstAsync();
-
-			var list = await _context.Randevular
-				.Where(r => r.AntrenorId == antrenorId && r.Durum == RandevuDurum.Beklemede)
-				.Include(r => r.Uye)
-				.Include(r => r.Hizmet)
-				.Include(r => r.Salon)
-				.ToListAsync();
-
-			return View(list);
-		}
-
-		[Authorize(Roles = "Antrenör")]
-		public async Task<IActionResult> Approve(int id)
+		[Authorize(Roles = "Admin,Antrenör")]
+		// Ortak Onayla
+		[HttpPost]
+		public async Task<IActionResult> Onayla(int id, string returnUrl = null)
 		{
 			var r = await _context.Randevular.FindAsync(id);
 			if (r == null) return NotFound();
@@ -293,11 +223,13 @@ namespace FitnessCenterReservationSystem.Controllers
 			r.Durum = RandevuDurum.Onaylandi;
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction(nameof(PendingRandevular));
+			return RedirectToLocal(returnUrl);
 		}
 
-		[Authorize(Roles = "Antrenör")]
-		public async Task<IActionResult> Reject(int id)
+		//  Ortak Reddet
+		[HttpPost]
+		[Authorize(Roles = "Admin,Antrenör")]
+		public async Task<IActionResult> Reddet(int id, string returnUrl = null)
 		{
 			var r = await _context.Randevular.FindAsync(id);
 			if (r == null) return NotFound();
@@ -305,7 +237,49 @@ namespace FitnessCenterReservationSystem.Controllers
 			r.Durum = RandevuDurum.Reddedildi;
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction(nameof(PendingRandevular));
+			return RedirectToLocal(returnUrl);
 		}
+
+		// Ortak İptal
+		[HttpPost]
+		[Authorize(Roles = "Admin,Antrenör,Üye")]
+		public async Task<IActionResult> Iptal(int id, string returnUrl = null)
+		{
+			var r = await _context.Randevular.FindAsync(id);
+			if (r == null) return NotFound();
+
+			r.Durum = RandevuDurum.Iptal;
+			await _context.SaveChangesAsync();
+
+			return RedirectToLocal(returnUrl);
+		}
+
+		//Ortak Tamamla
+		[HttpPost]
+		[Authorize(Roles = "Admin,Antrenör,Üye")]
+		public async Task<IActionResult> Tamamla(int id, string returnUrl = null)
+		{
+			var r = await _context.Randevular.FindAsync(id);
+			if (r == null) return NotFound();
+
+			r.Durum = RandevuDurum.Tamamlandi;
+			await _context.SaveChangesAsync();
+
+			return RedirectToLocal(returnUrl);
+		}
+
+		// Ortak redirect
+		private IActionResult RedirectToLocal(string returnUrl)
+		{
+			if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+				return Redirect(returnUrl);
+
+			// default olarak Randevularim sayfasına dön
+			return RedirectToAction("Randevularim");
+		}
+
+
+
+
 	}
 }
