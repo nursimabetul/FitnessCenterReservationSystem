@@ -1,0 +1,69 @@
+﻿@model IEnumerable<FitnessCenterReservationSystem.Models.Duyuru>
+
+@{
+    ViewData["Title"] = "Duyurular";
+}
+
+<h4 class="mb-4 text-primary">
+    <i class="bi bi-bell-fill me-2"></i> Duyurular
+</h4>
+
+@if (Model.Any())
+{
+    <div class="duyuru-list">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            var duyuru = Model.ElementAt(i);
+            var collapseId = $"duyuruCollapse{i}";
+            <div class="card mb-3 shadow border-0 rounded-3" style="border-left:5px solid #0d6efd;">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="cursor:pointer;" onclick="toggleDuyuru('@collapseId')">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-bell me-2"></i>@duyuru.Baslik
+                    </h6>
+                    <i class="bi bi-chevron-down fs-5" id="@($"icon{i}")"></i>
+                </div>
+                <div class="card-body collapse bg-light" id="@collapseId">
+                    @* Opsiyonel resim *@
+                    @* <img src="@duyuru.ResimYolu" class="img-fluid rounded mb-2" alt="Duyuru Resmi" /> *@
+
+                    <p>@duyuru.Icerik</p>
+
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-calendar me-1"></i>@duyuru.Tarih.ToString("g")
+                        @if (duyuru.Salon != null)
+                        {
+                            <span class="ms-2"><i class="bi bi-building me-1"></i>@duyuru.Salon.Ad</span>
+                        }
+                    </p>
+
+                    @if (duyuru.Olusturan != null)
+                    {
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-person me-1"></i>@duyuru.Olusturan.Ad @duyuru.Olusturan.Soyad
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+        function toggleDuyuru(id) {
+            const body = document.getElementById(id);
+            const icon = document.getElementById("icon" + id.replace("duyuruCollapse", ""));
+            if (body.classList.contains('show')) {
+                body.classList.remove('show');
+                icon.classList.remove('bi-chevron-up');
+                icon.classList.add('bi-chevron-down');
+            } else {
+                body.classList.add('show');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            }
+        }
+    </script>
+}
+else
+{
+    <p class="text-muted">Henüz yayınlanmış duyuru yok.</p>
+}

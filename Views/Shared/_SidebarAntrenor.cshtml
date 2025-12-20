@@ -83,11 +83,16 @@
         </li>        
         <!-- Haberler  -->
         <li class="nav-item">
-            <a href="/Haber/HaberlerCard" class="nav-link @(currentAction == "HaberlerCard" ? "active" : "")">
-                <i class="bi bi-megaphone"></i>  Haberler
+            <a href="/Duyuru/DuyurularCard" class="nav-link @(currentAction == "DuyurularCard" ? "active" : "")">
+                <i class="bi bi-megaphone"></i>  Duyuru
             </a>
         </li>
-
+		<!-- Haberler  -->
+		<li class="nav-item">
+			<a href="/Haber/HaberlerCard" class="nav-link @(currentAction == "HaberlerCard" ? "active" : "")">
+                <i class="bi bi-newspaper"></i>  Haberler
+			</a>
+		</li>
         <!-- Profilim -->
         <li class="nav-item">
             <a href="/Account/Profile" class="nav-link @(currentController == "Account" ? "active" : "")">
