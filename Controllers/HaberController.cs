@@ -49,7 +49,7 @@ namespace FitnessCenterReservationSystem.Controllers
         // GET: Haber/Create
         public IActionResult Create()
         {
-            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["OlusturanId"] = new SelectList(_context.Users,  "Id", "Ad");
             ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad");
             return View();
         }
@@ -67,7 +67,7 @@ namespace FitnessCenterReservationSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Ad", haber.OlusturanId);
             ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
             return View(haber);
         }
@@ -85,7 +85,7 @@ namespace FitnessCenterReservationSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Ad", haber.OlusturanId);
             ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
             return View(haber);
         }
@@ -122,7 +122,7 @@ namespace FitnessCenterReservationSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Id", haber.OlusturanId);
+            ViewData["OlusturanId"] = new SelectList(_context.Users, "Id", "Ad", haber.OlusturanId);
             ViewData["SalonId"] = new SelectList(_context.Salonlar, "Id", "Ad", haber.SalonId);
             return View(haber);
         }

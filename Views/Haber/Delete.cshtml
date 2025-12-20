@@ -30,7 +30,7 @@
             <dd class="col-sm-9">@Html.DisplayFor(model => model.Salon.Ad)</dd>
 
             <dt class="col-sm-3 fw-semibold">@Html.DisplayNameFor(model => model.Olusturan)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Olusturan.Id)</dd>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Olusturan.Ad + " " + model.Olusturan.Soyad)</dd>
         </dl>
 
         <form asp-action="Delete" class="d-flex gap-2">
